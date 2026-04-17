@@ -252,9 +252,6 @@ footer { text-align: center; padding: 20px; font-size: 0.64rem; color: var(--mut
 <!-- LOGIN (not shown; auth disabled for consultant preview) -->
 <div id="loginPage">
   <div class="login-card">
-    <div class="login-logos">
-      <img src="assets/me-logo.png" alt="Metric Edge" onerror="this.style.display='none'">
-    </div>
     <h1>The Co-Op Zululami</h1>
     <div class="login-sub">Consultant Budget Dashboard</div>
     <div class="login-field"><label>Email</label><input type="email" id="loginEmail"></div>
@@ -269,7 +266,6 @@ footer { text-align: center; padding: 20px; font-size: 0.64rem; color: var(--mut
 
 <div class="header">
   <div class="header-left">
-    <img src="assets/me-logo.png" alt="Metric Edge" onerror="this.style.display='none'">
     <div>
       <h1>The Co-Op Zululami</h1>
       <div class="sub">Retail &amp; Commercial &#8226; Erf 514 Zululami &#8226; Consultant Dashboard</div>
@@ -277,7 +273,6 @@ footer { text-align: center; padding: 20px; font-size: 0.64rem; color: var(--mut
   </div>
   <div class="header-right">
     <span class="header-audience">Consultants only</span>
-    <img src="assets/me-logo.png" alt="Metric Edge" onerror="this.style.display='none'">
   </div>
 </div>
 
@@ -316,10 +311,35 @@ footer { text-align: center; padding: 20px; font-size: 0.64rem; color: var(--mut
 <!-- OVERVIEW -->
 <div class="panel active" id="panel-overview">
   <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Feasibility Total (Nov 2025)</div><div class="m-value">R 54,001,335</div><div class="m-sub">Builders &amp; External Works ex Prelims</div></div>
-    <div class="m gold"><div class="m-label">Building A Stage 2 (Jul 2025)</div><div class="m-value">R 10,467,372</div><div class="m-sub">BOE &mdash; all-in view</div></div>
+    <div class="m indigo"><div class="m-label">Total Project (ex VAT)</div><div class="m-value">R 88,719,634</div><div class="m-sub">Feasibility Nov 2025 &mdash; all-in</div></div>
+    <div class="m gold"><div class="m-label">Builders &amp; Ext Works (ex Prelims)</div><div class="m-value">R 54,001,335</div><div class="m-sub">Hard cost base</div></div>
     <div class="m orange"><div class="m-label">Building A Stage 4 (Apr 2026)</div><div class="m-value">R 12,028,724</div><div class="m-sub">Provisional BOQ</div></div>
     <div class="m red"><div class="m-label">Building A Variance</div><div class="m-value" style="color:var(--red)">+R 1,561,352</div><div class="m-sub">+14.9% vs Stage 2</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h"><h2>Feasibility &mdash; High-Level Breakdown</h2><span class="badge b-indigo">Nov 2025 &mdash; Option A rev1</span></div>
+    <div class="card-b" style="padding:0;overflow-x:auto">
+      <table>
+        <thead><tr><th>Cost Group</th><th class="r" style="width:120px">Rate</th><th class="r" style="width:180px">Amount (R)</th><th class="r" style="width:100px">% of Total</th></tr></thead>
+        <tbody>
+          <tr><td>Builders &amp; External Works + Prelims @ 10%</td><td class="r">&mdash;</td><td class="r">59,401,469</td><td class="r">67.0%</td></tr>
+          <tr><td>Contingency</td><td class="r">4.5%</td><td class="r">2,673,066</td><td class="r">3.0%</td></tr>
+          <tr><td>Escalation (pre-contract + contract)</td><td class="r">5% p.a.</td><td class="r">3,861,096</td><td class="r">4.4%</td></tr>
+          <tr><td>Other costs (mini sub, connections, signage)</td><td class="r">&mdash;</td><td class="r">1,800,000</td><td class="r">2.0%</td></tr>
+          <tr><td>Professional fees (+ geotech + DMF)</td><td class="r">10% + 1%</td><td class="r">7,302,919</td><td class="r">8.2%</td></tr>
+          <tr><td>Property costs (rates, legal, marketing, letting)</td><td class="r">&mdash;</td><td class="r">3,350,000</td><td class="r">3.8%</td></tr>
+          <tr><td>Finance costs (interest @ 10.5% + raising fee @ 1.5%)</td><td class="r">&mdash;</td><td class="r">6,114,307</td><td class="r">6.9%</td></tr>
+          <tr><td>Land cost allocation</td><td class="r">&mdash;</td><td class="r">4,216,777</td><td class="r">4.8%</td></tr>
+          <tr class="row-total"><td><strong>TOTAL EXCL. VAT</strong></td><td class="r"></td><td class="r"><strong>88,719,634</strong></td><td class="r"><strong>100.0%</strong></td></tr>
+          <tr><td>Less: sales income (GF retail + 2F Block C)</td><td class="r">&mdash;</td><td class="r">(24,696,000)</td><td class="r">&mdash;</td></tr>
+          <tr class="row-total" style="background:rgba(22,163,74,0.08)"><td><strong>NET DEVELOPMENT COST (after sales)</strong></td><td class="r"></td><td class="r" style="color:var(--green)"><strong>64,023,634</strong></td><td class="r"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="info-box" style="margin:0;border-radius:0;border:none;border-top:1px solid var(--border)">
+      Yield on capital <strong>9.96%</strong> based on R 6,376,224/annum (rental R 5,964,624 + parking R 411,600) against net development cost. Full line-by-line breakdown in Feasibility Reference tab.
+    </div>
   </div>
 
   <div class="card">
@@ -634,42 +654,136 @@ footer { text-align: center; padding: 20px; font-size: 0.64rem; color: var(--mut
 
 <!-- FEASIBILITY REFERENCE -->
 <div class="panel" id="panel-feasibility">
+  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+    <div class="m indigo"><div class="m-label">Total Project (ex VAT)</div><div class="m-value">R 88,719,634</div><div class="m-sub">All costs incl. land, finance, fees</div></div>
+    <div class="m gold"><div class="m-label">Builders &amp; Ext Works (ex Prelims)</div><div class="m-value">R 54,001,335</div><div class="m-sub">Hard cost base</div></div>
+    <div class="m cyan"><div class="m-label">Net After Sales Income</div><div class="m-value">R 64,023,634</div><div class="m-sub">Sales of R 24,696,000 deducted</div></div>
+    <div class="m green"><div class="m-label">Yield on Capital</div><div class="m-value" style="color:var(--green)">9.96%</div><div class="m-sub">Sell &amp; Let model (2F Block C sold)</div></div>
+  </div>
+
   <div class="card">
-    <div class="card-h"><h2>Feasibility &mdash; Option A rev1 (18 November 2025)</h2><span class="badge b-indigo">Authoritative reference</span></div>
+    <div class="card-h"><h2>Feasibility &mdash; Option A rev1 (18 November 2025) &mdash; Full Line-by-Line</h2><span class="badge b-indigo">Authoritative reference</span></div>
     <div class="card-b" style="padding:0;overflow-x:auto">
       <table>
-        <thead><tr><th>Item</th><th class="r">Amount (R)</th></tr></thead>
+        <thead><tr><th>Item</th><th class="r" style="width:120px">Rate / %</th><th class="r" style="width:180px">Amount (R)</th></tr></thead>
         <tbody>
-          <tr><td><strong>Building A</strong></td><td class="r">10,535,738</td></tr>
-          <tr><td><strong>Building B</strong></td><td class="r">7,552,630</td></tr>
-          <tr><td><strong>Building C</strong></td><td class="r">20,779,088</td></tr>
-          <tr><td><strong>General Common Areas</strong></td><td class="r">3,415,287</td></tr>
-          <tr><td><strong>External Works</strong></td><td class="r">11,718,592</td></tr>
-          <tr><td>Preliminaries @ 10%</td><td class="r">5,400,134</td></tr>
-          <tr class="row-total"><td><strong>Sub-total 1 (Builders &amp; External Works)</strong></td><td class="r">59,401,469</td></tr>
-          <tr><td>Contingency @ 4.5%</td><td class="r">2,673,066</td></tr>
-          <tr class="row-total"><td><strong>Total ex VAT incl. Contingency</strong></td><td class="r">62,074,535</td></tr>
-          <tr><td>Pre-contract escalation (to 30 Jul 2025)</td><td class="r">1,485,037</td></tr>
-          <tr><td>Contract escalation (from 1 Feb 2026)</td><td class="r">2,376,059</td></tr>
-          <tr class="row-total"><td><strong>Sub-total 2</strong></td><td class="r">65,935,631</td></tr>
-          <tr><td>Other costs (electrical contribution, connections, signage)</td><td class="r">1,800,000</td></tr>
-          <tr><td>Professional fees @ 10% + geotech + DMF</td><td class="r">7,302,919</td></tr>
-          <tr><td>Property costs (rates, legal, marketing, letting)</td><td class="r">3,350,000</td></tr>
-          <tr class="row-total"><td><strong>Sub-total 3</strong></td><td class="r">78,388,550</td></tr>
-          <tr><td>Finance costs (interest allowance + raising fee)</td><td class="r">6,114,307</td></tr>
-          <tr><td>Land cost allocation</td><td class="r">4,216,777</td></tr>
-          <tr class="row-total"><td><strong>TOTAL EXCL. VAT</strong></td><td class="r">88,719,634</td></tr>
-          <tr><td>Less: sales income (refer sales sheet)</td><td class="r">(24,696,000)</td></tr>
-          <tr class="row-total"><td><strong>Total after deduction of sales</strong></td><td class="r">64,023,634</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">1. BUILDERS &amp; EXTERNAL WORKS</strong></td></tr>
+          <tr><td>Building A</td><td class="r">&mdash;</td><td class="r">10,535,738</td></tr>
+          <tr><td>Building B</td><td class="r">&mdash;</td><td class="r">7,552,630</td></tr>
+          <tr><td>Building C</td><td class="r">&mdash;</td><td class="r">20,779,088</td></tr>
+          <tr><td>General Common Areas</td><td class="r">&mdash;</td><td class="r">3,415,287</td></tr>
+          <tr><td>External Works</td><td class="r">&mdash;</td><td class="r">11,718,592</td></tr>
+          <tr><td>Preliminaries</td><td class="r">10.0%</td><td class="r">5,400,134</td></tr>
+          <tr class="row-total"><td><strong>Sub-total 1</strong></td><td class="r"></td><td class="r">59,401,469</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">2. CONTINGENCY</strong></td></tr>
+          <tr><td>Contingency</td><td class="r">4.5%</td><td class="r">2,673,066</td></tr>
+          <tr class="row-total"><td><strong>Total ex VAT incl. Contingency</strong></td><td class="r"></td><td class="r">62,074,535</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">3. ESCALATION</strong> (5% p.a. &mdash; 0.5% per month)</td></tr>
+          <tr><td>Pre-contract escalation (base to 30 Jul 2025)</td><td class="r">&mdash;</td><td class="r">1,485,037</td></tr>
+          <tr><td>Contract escalation (construction starts 1 Feb 2026)</td><td class="r">&mdash;</td><td class="r">2,376,059</td></tr>
+          <tr class="row-total"><td><strong>Sub-total 2</strong></td><td class="r"></td><td class="r">65,935,631</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">4. OTHER COSTS</strong></td></tr>
+          <tr><td>Electrical contribution (mini sub)</td><td class="r">&mdash;</td><td class="r">1,000,000</td></tr>
+          <tr><td>Water / sewer / stormwater / electrical connection costs</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
+          <tr><td>Signage</td><td class="r">&mdash;</td><td class="r">300,000</td></tr>
+          <tr class="row-total"><td><strong>Sub-total &mdash; Other Costs</strong></td><td class="r"></td><td class="r">1,800,000</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">5. PROFESSIONAL FEES</strong></td></tr>
+          <tr><td>Professional fees (QS / arch / structural / services / fire / H&amp;S)</td><td class="r">10.0%</td><td class="r">6,593,563</td></tr>
+          <tr><td>Geotech</td><td class="r">&mdash;</td><td class="r">50,000</td></tr>
+          <tr><td>Development Management Fee</td><td class="r">1.0%</td><td class="r">659,356</td></tr>
+          <tr class="row-total"><td><strong>Sub-total &mdash; Professional Fees</strong></td><td class="r"></td><td class="r">7,302,919</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">6. PROPERTY COSTS</strong></td></tr>
+          <tr><td>Rates allowance</td><td class="r">&mdash;</td><td class="r">250,000</td></tr>
+          <tr><td>Sectional title &amp; body corporate fees</td><td class="r">&mdash;</td><td class="r">1,250,000</td></tr>
+          <tr><td>Legal fee allowance</td><td class="r">&mdash;</td><td class="r">200,000</td></tr>
+          <tr><td>Land surveyor costs</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
+          <tr><td>Local authority charges &mdash; plan scrutiny fees</td><td class="r">&mdash;</td><td class="r">110,000</td></tr>
+          <tr><td>Traffic impact assessment</td><td class="r">&mdash;</td><td class="r">40,000</td></tr>
+          <tr><td>Marketing budget</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
+          <tr><td>Procurement / letting commission</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
+          <tr class="row-total"><td><strong>Sub-total &mdash; Property Costs</strong></td><td class="r"></td><td class="r">3,350,000</td></tr>
+
+          <tr class="row-total"><td><strong>Sub-total 3</strong></td><td class="r"></td><td class="r">78,388,550</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">7. FINANCE COSTS</strong></td></tr>
+          <tr><td>Interest allowance (0.45 cashflow factor applied)</td><td class="r">10.5%</td><td class="r">4,938,479</td></tr>
+          <tr><td>Finance raising fee</td><td class="r">1.5%</td><td class="r">1,175,828</td></tr>
+          <tr class="row-total"><td><strong>Sub-total &mdash; Finance Costs</strong></td><td class="r"></td><td class="r">6,114,307</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">8. LAND COST</strong></td></tr>
+          <tr><td>Land cost allocation</td><td class="r">&mdash;</td><td class="r">4,216,777</td></tr>
+          <tr class="row-total"><td><strong>Sub-total &mdash; Land</strong></td><td class="r"></td><td class="r">4,216,777</td></tr>
+
+          <tr class="row-total" style="background:rgba(220,38,38,0.08);border-top:3px solid var(--red)"><td><strong>TOTAL EXCL. VAT</strong></td><td class="r"></td><td class="r" style="color:var(--red);font-size:1rem">88,719,634</td></tr>
+
+          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">9. SALES &amp; NET</strong></td></tr>
+          <tr><td>Less: Sales income (refer Sales sheet)</td><td class="r">&mdash;</td><td class="r">(24,696,000)</td></tr>
+          <tr class="row-total" style="background:rgba(22,163,74,0.08);border-top:3px solid var(--green)"><td><strong>Total ex VAT &mdash; after deduction of sales</strong></td><td class="r"></td><td class="r" style="color:var(--green);font-size:1rem">64,023,634</td></tr>
+
         </tbody>
       </table>
     </div>
   </div>
 
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m gold"><div class="m-label">Net Rental Income (ex VAT / annum)</div><div class="m-value">R 5,964,624</div><div class="m-sub">After 10% opp cost allowance</div></div>
-    <div class="m indigo"><div class="m-label">Parking Income</div><div class="m-value">R 411,600</div><div class="m-sub">49 bays @ R700/mo</div></div>
-    <div class="m green"><div class="m-label">Yield on Capital</div><div class="m-value" style="color:var(--green)">9.96%</div><div class="m-sub">Sell &amp; Let model (2F Block C sold)</div></div>
+  <div class="card">
+    <div class="card-h"><h2>Rental &amp; Yield</h2><span class="badge b-green">Sell &amp; Let Model &mdash; 2F Block C sold</span></div>
+    <div class="card-b" style="padding:0;overflow-x:auto">
+      <table>
+        <thead><tr><th>Building / Income Source</th><th class="r">Lettable (m&#178;)</th><th class="r">Target R/m&#178;</th><th class="r">Gross Rent / annum</th><th class="r">Net Rent (after 10% opp cost)</th></tr></thead>
+        <tbody>
+          <tr class="row-grey"><td colspan="5"><strong style="color:var(--indigo)">BUILDING A</strong> (754m&#178; lettable)</td></tr>
+          <tr><td>A02 &mdash; Burger Bar</td><td class="r">121</td><td class="r">R 300</td><td class="r">R 435,600</td><td class="r">R 392,040</td></tr>
+          <tr><td>Exclusive use rental &mdash; external seating</td><td class="r">36</td><td class="r">R 150</td><td class="r">R 64,800</td><td class="r">R 58,320</td></tr>
+          <tr><td>A03 &mdash; Liquor</td><td class="r">60</td><td class="r">R 300</td><td class="r">R 216,000</td><td class="r">R 194,400</td></tr>
+          <tr><td>A04 &mdash; GF</td><td class="r">60</td><td class="r">R 300</td><td class="r">R 216,000</td><td class="r">R 194,400</td></tr>
+          <tr><td>A05 &mdash; GF</td><td class="r">59</td><td class="r">R 300</td><td class="r">R 212,400</td><td class="r">R 191,160</td></tr>
+          <tr><td>A06 &mdash; GF</td><td class="r">62</td><td class="r">R 300</td><td class="r">R 223,200</td><td class="r">R 200,880</td></tr>
+          <tr><td>A07 &mdash; FF</td><td class="r">60</td><td class="r">R 275</td><td class="r">R 198,000</td><td class="r">R 178,200</td></tr>
+          <tr><td>A08 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
+          <tr><td>A09 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
+          <tr><td>A10 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
+          <tr><td>A11 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
+          <tr><td>A12 &mdash; FF</td><td class="r">60</td><td class="r">R 275</td><td class="r">R 198,000</td><td class="r">R 178,200</td></tr>
+          <tr class="row-total"><td><strong>Building A sub-total</strong></td><td class="r">754</td><td class="r"></td><td class="r">R 2,542,800</td><td class="r">R 2,288,520</td></tr>
+
+          <tr class="row-grey"><td colspan="5"><strong style="color:var(--indigo)">BUILDING B</strong> (592m&#178; lettable)</td></tr>
+          <tr><td>Florist &mdash; B01</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
+          <tr><td>Barber &mdash; B02</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
+          <tr><td>Vacant &mdash; B03</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
+          <tr><td>Print shop &mdash; B04</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
+          <tr><td>Laundromat &mdash; B05</td><td class="r">88</td><td class="r">R 300</td><td class="r">R 316,800</td><td class="r">R 285,120</td></tr>
+          <tr><td>Gym</td><td class="r">300</td><td class="r">R 175</td><td class="r">R 630,000</td><td class="r">R 567,000</td></tr>
+          <tr class="row-total"><td><strong>Building B sub-total</strong></td><td class="r">592</td><td class="r"></td><td class="r">R 1,681,200</td><td class="r">R 1,513,080</td></tr>
+
+          <tr class="row-grey"><td colspan="5"><strong style="color:var(--indigo)">BUILDING C</strong> (1,606.2m&#178; &mdash; retail GF sold, FF let, SF sold)</td></tr>
+          <tr><td>Retail GF &mdash; sold @ R24,000/m&#178;</td><td class="r">363</td><td class="r">R 24,000</td><td class="r" colspan="2">Sales income R 8,712,000</td></tr>
+          <tr><td>Retail GF &mdash; sold @ R24,000/m&#178;</td><td class="r">19</td><td class="r">R 24,000</td><td class="r" colspan="2">Sales income R 456,000</td></tr>
+          <tr><td>Exclusive use rental &mdash; external seating</td><td class="r">70.2</td><td class="r">R 150</td><td class="r">R 126,360</td><td class="r">R 113,724</td></tr>
+          <tr><td>C01 &mdash; FF</td><td class="r">159</td><td class="r">R 275</td><td class="r">R 524,700</td><td class="r">R 472,230</td></tr>
+          <tr><td>C02 &mdash; FF</td><td class="r">124</td><td class="r">R 275</td><td class="r">R 409,200</td><td class="r">R 368,280</td></tr>
+          <tr><td>C03 &mdash; FF</td><td class="r">124</td><td class="r">R 275</td><td class="r">R 409,200</td><td class="r">R 368,280</td></tr>
+          <tr><td>C04 &mdash; FF</td><td class="r">155</td><td class="r">R 275</td><td class="r">R 511,500</td><td class="r">R 460,350</td></tr>
+          <tr><td>C05 &mdash; FF</td><td class="r">128</td><td class="r">R 275</td><td class="r">R 422,400</td><td class="r">R 380,160</td></tr>
+          <tr><td>C06 &mdash; SF &mdash; sold @ R27,000/m&#178;</td><td class="r">464</td><td class="r">R 27,000</td><td class="r" colspan="2">Sales income R 15,528,000</td></tr>
+          <tr class="row-total"><td><strong>Building C sub-total (rental only)</strong></td><td class="r">1,606.2</td><td class="r"></td><td class="r">R 2,403,360</td><td class="r">R 2,163,024</td></tr>
+
+          <tr class="row-total" style="background:rgba(200,168,78,0.15)"><td><strong>TOTAL RENTAL INCOME</strong></td><td class="r"><strong>2,952.2</strong></td><td class="r"></td><td class="r"><strong>R 6,627,360</strong></td><td class="r"><strong>R 5,964,624</strong></td></tr>
+          <tr><td>Parking income (49 bays @ R700/mo)</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r" colspan="2">R 411,600</td></tr>
+          <tr class="row-total" style="background:rgba(22,163,74,0.08)"><td><strong>TOTAL INCOME (Rental + Parking)</strong></td><td class="r"></td><td class="r"></td><td class="r" colspan="2" style="color:var(--green)"><strong>R 6,376,224 / annum</strong></td></tr>
+          <tr class="row-total" style="background:rgba(200,168,78,0.15)"><td><strong>TOTAL SALES INCOME</strong></td><td class="r"></td><td class="r"></td><td class="r" colspan="2"><strong>R 24,696,000 (once-off)</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>Triple-net lease assumption:</strong> All rentals modelled as triple-net &mdash; tenants recover all opex via levies. 10% opp cost allowance = developer/landlord contingency. All prices exclude VAT. No commission modelled on sales.
   </div>
 
   <div class="card">
