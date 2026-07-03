@@ -453,6 +453,16 @@ window.ME185_DATA = {
         "jun2026": 3825000.0
       },
       {
+        "item": "Pre-Contract Escalation",
+        "nov2025": 1485036.72,
+        "jun2026": 0.0
+      },
+      {
+        "item": "Contract Escalation",
+        "nov2025": 2376058.76,
+        "jun2026": 0.0
+      },
+      {
         "item": "Other Costs",
         "nov2025": 1800000.0,
         "jun2026": 2235000.0
