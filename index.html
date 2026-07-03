@@ -53,6 +53,8 @@ tr.total td.r{font-family:'JetBrains Mono',monospace}
 .flowrow .v{font-family:'JetBrains Mono',monospace;font-size:13.5px}
 .flowrow.em{background:#f4f0e6;font-weight:700;border-top:2px solid var(--charcoal)}
 footer{max-width:1240px;margin:0 auto;padding:18px 32px;font-size:11px;color:var(--muted);border-top:1px solid var(--line)}
+.subrow td{color:var(--muted);font-size:12.5px;background:#fcfaf5}
+.subrow td:first-child{padding-left:30px}
 .noterow td{font-size:11.5px;color:var(--muted);background:#faf7ef;padding:4px 10px 8px 34px;border-bottom:1px solid var(--line);line-height:1.5}
 @media(max-width:760px){main,nav,header{padding-left:16px;padding-right:16px}}
 </style>
@@ -244,7 +246,12 @@ document.getElementById('fs-table').innerHTML =
   + D.feasibility.lines.map(l=>{
     const mv=l.jun2026-l.nov2025;
     const tot=l.item==='TOTAL EXCL. VAT';
-    return `<tr class="${tot?'total':''}"><td>${l.item}</td><td class="r">${R(l.nov2025)}</td><td class="r">${R(l.jun2026)}</td><td class="r ${cls(mv)}">${R(mv)}</td></tr>`;
+    let h=`<tr class="${tot?'total':''}"><td>${l.item}</td><td class="r">${R(l.nov2025)}</td><td class="r">${R(l.jun2026)}</td><td class="r ${cls(mv)}">${R(mv)}</td></tr>`;
+    (l.detail||[]).forEach(d=>{
+      const dm=d.jun2026-d.nov2025;
+      h+=`<tr class="subrow"><td>${d.item}</td><td class="r">${R(d.nov2025)}</td><td class="r">${R(d.jun2026)}</td><td class="r ${cls(dm)}">${R(dm)}</td></tr>`;
+    });
+    return h;
   }).join('');
 </script>
 </body>

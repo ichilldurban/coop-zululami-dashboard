@@ -470,17 +470,88 @@ window.ME185_DATA = {
       {
         "item": "Professional Fees etc.",
         "nov2025": 7302919.36,
-        "jun2026": 8355505.74
+        "jun2026": 8355505.74,
+        "detail": [
+          {
+            "item": "Professional Fees",
+            "nov2025": 6593563.06,
+            "jun2026": 7013754.35
+          },
+          {
+            "item": "Geotech",
+            "nov2025": 50000.0,
+            "jun2026": 50000.0
+          },
+          {
+            "item": "Development Management Fee",
+            "nov2025": 659356.31,
+            "jun2026": 1291751.39
+          }
+        ]
       },
       {
         "item": "Property Costs",
         "nov2025": 3350000.0,
-        "jun2026": 3350000.0
+        "jun2026": 3350000.0,
+        "detail": [
+          {
+            "item": "Rates allowance",
+            "nov2025": 250000.0,
+            "jun2026": 250000.0
+          },
+          {
+            "item": "Sectional title & body corporate fees",
+            "nov2025": 1250000.0,
+            "jun2026": 1250000.0
+          },
+          {
+            "item": "Legal fee allowance",
+            "nov2025": 200000.0,
+            "jun2026": 200000.0
+          },
+          {
+            "item": "Land Surveyor costs",
+            "nov2025": 500000.0,
+            "jun2026": 500000.0
+          },
+          {
+            "item": "Local Authority Charges - plan scrutiny",
+            "nov2025": 110000.0,
+            "jun2026": 110000.0
+          },
+          {
+            "item": "Traffic impact assessment",
+            "nov2025": 40000.0,
+            "jun2026": 40000.0
+          },
+          {
+            "item": "Marketing budget",
+            "nov2025": 500000.0,
+            "jun2026": 500000.0
+          },
+          {
+            "item": "Procurement letting commission",
+            "nov2025": 500000.0,
+            "jun2026": 500000.0
+          }
+        ]
       },
       {
         "item": "Finance Costs",
         "nov2025": 6114306.9,
-        "jun2026": 6125189.88
+        "jun2026": 6125189.88,
+        "detail": [
+          {
+            "item": "Interest allowance",
+            "nov2025": 4938478.65,
+            "jun2026": 4947268.75
+          },
+          {
+            "item": "Finance raising fee allowance (2%)",
+            "nov2025": 1175828.25,
+            "jun2026": 1177921.13
+          }
+        ]
       },
       {
         "item": "Land Cost",
