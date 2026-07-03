@@ -3,1135 +3,249 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Co-Op Zululami &mdash; Consultant Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta name="robots" content="noindex, nofollow">
+<title>ME-185 CO-OP 514 — Budget &amp; AFC Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="data.js"></script>
 <style>
-:root {
-  --bg: #f5f5f5;
-  --card: #ffffff;
-  --elevated: #f8f8f8;
-  --inset: #f0f0f0;
-  --border: #e5e5e5;
-  --border-b: #d5d5d5;
-  --border-a: #c0c0c0;
-  --text: #333333;
-  --text2: #555555;
-  --muted: #888888;
-  --gold: #c8a84e;
-  --gold-d: rgba(200,168,78,0.1);
-  --indigo: #4a5568;
-  --indigo-d: rgba(74,85,104,0.08);
-  --green: #16a34a;
-  --green-d: rgba(22,163,74,0.08);
-  --red: #dc2626;
-  --red-d: rgba(220,38,38,0.08);
-  --cyan: #0891b2;
-  --cyan-d: rgba(8,145,178,0.08);
-  --orange: #ea580c;
-  --orange-d: rgba(234,88,12,0.08);
-  --purple: #7c3aed;
-  --purple-d: rgba(124,58,237,0.08);
-  --r: 8px;
-  --rs: 4px;
-  --t: 0.2s ease;
-  --header-bg: #2d2d2d;
-  --nav-bg: #3a3a3a;
+:root{
+  --yellow:#F5BF2B; --charcoal:#2E3A45; --ink:#1d262e; --offwhite:#FAF8F4;
+  --line:#e3ded4; --muted:#6b7682; --good:#1e7d4f; --bad:#b03a2e; --card:#ffffff;
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 3px; }
-
-/* LOGIN (auth disabled - never shown at boot) */
-#loginPage { display: none; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%); padding: 20px; }
-.login-card { background: #fff; border-radius: 12px; padding: 48px 40px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; }
-.login-logos { display: flex; justify-content: center; align-items: center; gap: 24px; margin-bottom: 32px; }
-.login-logos img { height: 56px; object-fit: contain; }
-.login-card h1 { font-size: 1.5rem; font-weight: 800; color: #2d2d2d; margin-bottom: 4px; letter-spacing: -0.5px; }
-.login-card .login-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; }
-.login-field { margin-bottom: 16px; text-align: left; }
-.login-field label { font-size: 0.72rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
-.login-field input { width: 100%; padding: 12px 14px; border: 1px solid var(--border-b); border-radius: 6px; font-size: 0.9rem; font-family: inherit; outline: none; transition: border-color var(--t); }
-.login-field input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-d); }
-.login-btn { width: 100%; padding: 14px; background: var(--gold); color: #fff; border: none; border-radius: 6px; font-size: 0.9rem; font-weight: 700; cursor: pointer; font-family: inherit; transition: background var(--t); margin-top: 8px; }
-.login-btn:hover { background: #b8963e; }
-.login-error { color: var(--red); font-size: 0.78rem; margin-top: 12px; display: none; }
-
-/* APP */
-#appPage { display: block; }
-
-/* HEADER */
-.header { background: var(--header-bg); color: #fff; padding: 16px 28px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-.header-left { display: flex; align-items: center; gap: 16px; }
-.header-left img { height: 44px; border-radius: 4px; }
-.header-left h1 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.3px; }
-.header-left .sub { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
-.header-right { display: flex; align-items: center; gap: 16px; }
-.header-right img { height: 36px; }
-.header-audience { font-size: 0.68rem; color: var(--gold); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 4px 10px; border: 1px solid rgba(200,168,78,0.4); border-radius: 3px; }
-
-/* NAV */
-.nav { display: flex; background: var(--nav-bg); padding: 0 12px; position: sticky; top: 76px; z-index: 99; flex-wrap: wrap; gap: 0; }
-.nav-item { position: relative; }
-.nav-btn { padding: 14px 18px; cursor: pointer; font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.65); border: none; background: none; border-bottom: 3px solid transparent; white-space: nowrap; transition: all var(--t); font-family: inherit; display: flex; align-items: center; gap: 5px; letter-spacing: -0.1px; }
-.nav-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
-.nav-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
-.nav-btn .arrow { font-size: 0.5rem; transition: transform 0.2s; }
-.nav-item:hover .arrow, .nav-item.open .arrow { transform: rotate(180deg); }
-.nav-dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid var(--border); border-radius: 6px; min-width: 240px; padding: 4px 0; box-shadow: 0 8px 24px rgba(0,0,0,0.15); z-index: 200; }
-.nav-item:hover .nav-dropdown, .nav-item.open .nav-dropdown { display: block; }
-.nav-drop-item { display: block; padding: 10px 18px; font-size: 0.8rem; color: var(--text2); cursor: pointer; transition: all 0.15s; border: none; background: none; width: 100%; text-align: left; font-family: inherit; white-space: nowrap; font-weight: 500; }
-.nav-drop-item:hover { background: var(--gold-d); color: var(--text); }
-.nav-drop-item.active { color: var(--gold); font-weight: 700; }
-.nav-drop-item .status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
-.nav-drop-item .status-dot.live { background: var(--green); }
-.nav-drop-item .status-dot.pending { background: var(--muted); }
-
-/* CONTENT */
-.content { max-width: 1400px; margin: 0 auto; padding: 24px; }
-.panel { display: none; animation: slideUp 0.3s ease; }
-.panel.active { display: block; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* CARDS */
-.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.card-h { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-.card-h h2 { font-size: 1rem; font-weight: 700; color: var(--text); }
-.card-b { padding: 20px; }
-
-/* METRIC CARDS */
-.mg { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 20px; }
-.m { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 18px 20px; position: relative; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.m::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; }
-.m.gold::before { background: linear-gradient(90deg, var(--gold), transparent 80%); }
-.m.green::before { background: linear-gradient(90deg, var(--green), transparent 80%); }
-.m.red::before { background: linear-gradient(90deg, var(--red), transparent 80%); }
-.m.indigo::before { background: linear-gradient(90deg, var(--indigo), transparent 80%); }
-.m.purple::before { background: linear-gradient(90deg, var(--purple), transparent 80%); }
-.m.cyan::before { background: linear-gradient(90deg, var(--cyan), transparent 80%); }
-.m.orange::before { background: linear-gradient(90deg, var(--orange), transparent 80%); }
-.m.grey::before { background: linear-gradient(90deg, var(--muted), transparent 80%); }
-.m-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1.1px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-.m-value { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text); }
-.m-sub { font-size: 0.68rem; color: var(--muted); margin-top: 4px; }
-
-/* TABLES */
-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-th { background: var(--elevated); padding: 10px 14px; text-align: left; font-weight: 600; color: var(--muted); border-bottom: 1px solid var(--border); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.7px; }
-td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text2); }
-tr:hover td { background: rgba(0,0,0,0.01); }
-.r { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.row-green td { background: rgba(22,163,74,0.04); }
-.row-red td { background: rgba(220,38,38,0.04); }
-.row-amber td { background: rgba(234,88,12,0.04); }
-.row-grey td { color: var(--muted); font-style: italic; }
-.row-total td { background: var(--gold-d); font-weight: 800; color: #8b6914; font-size: 0.88rem; border-top: 2px solid rgba(200,168,78,0.3); }
-
-/* BADGES */
-.badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 4px; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.2px; }
-.b-green { background: var(--green-d); color: var(--green); }
-.b-gold { background: var(--gold-d); color: #8b6914; }
-.b-red { background: var(--red-d); color: var(--red); }
-.b-orange { background: var(--orange-d); color: var(--orange); }
-.b-indigo { background: var(--indigo-d); color: var(--indigo); }
-.b-purple { background: var(--purple-d); color: var(--purple); }
-.b-cyan { background: var(--cyan-d); color: var(--cyan); }
-.b-grey { background: var(--inset); color: var(--muted); }
-
-/* BUTTONS */
-.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 4px; font-size: 0.76rem; font-weight: 600; cursor: pointer; border: none; transition: all var(--t); font-family: inherit; text-decoration: none; }
-.btn-primary { background: var(--gold); color: #fff; }
-.btn-primary:hover { background: #b8963e; transform: translateY(-1px); }
-.btn-download { background: var(--green); color: #fff; }
-.btn-download:hover { background: #15803d; transform: translateY(-1px); }
-.btn-outline { background: transparent; border: 1px solid var(--border-b); color: var(--text2); }
-.btn-outline:hover { border-color: var(--gold); color: #8b6914; }
-.btn-sm { padding: 6px 12px; font-size: 0.7rem; }
-
-/* CHARTS */
-.chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.chart-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.chart-card h3 { font-size: 0.82rem; font-weight: 600; color: var(--text2); margin-bottom: 14px; text-align: center; }
-.chart-wrap { position: relative; height: 320px; }
-
-/* DRIVER CARDS */
-.driver-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
-.driver { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--border-a); border-radius: var(--r); padding: 14px 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.driver.up { border-left-color: var(--red); }
-.driver.down { border-left-color: var(--green); }
-.driver.reclass { border-left-color: var(--cyan); }
-.driver-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
-.driver h4 { font-size: 0.88rem; font-weight: 700; color: var(--text); }
-.driver .delta { font-size: 0.9rem; font-weight: 800; white-space: nowrap; }
-.driver .delta.up { color: var(--red); }
-.driver .delta.down { color: var(--green); }
-.driver .delta.reclass { color: var(--cyan); }
-.driver p { font-size: 0.75rem; color: var(--text2); line-height: 1.5; }
-
-/* UPLOAD ZONE */
-.upload-zone { border: 2px dashed var(--border-b); border-radius: var(--r); padding: 40px; text-align: center; cursor: pointer; transition: all var(--t); background: var(--inset); }
-.upload-zone:hover { border-color: var(--gold); background: var(--gold-d); }
-.upload-zone .icon { font-size: 2rem; margin-bottom: 10px; opacity: 0.4; }
-.upload-zone .upload-title { font-weight: 600; color: var(--text2); font-size: 0.85rem; }
-.upload-zone .upload-sub { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
-.upload-progress { margin-top: 8px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; display: none; }
-.upload-progress-bar { height: 100%; background: var(--gold); border-radius: 2px; transition: width 0.3s; width: 0%; }
-
-/* INFO / RISK / EMPTY */
-.info-box { padding: 14px 18px; background: rgba(200,168,78,0.06); border: 1px solid rgba(200,168,78,0.2); border-radius: var(--rs); font-size: 0.78rem; color: var(--text2); margin: 14px 0; }
-.risk-box { padding: 14px 18px; background: var(--red-d); border: 1px solid rgba(220,38,38,0.2); border-radius: var(--rs); font-size: 0.8rem; color: var(--text); margin: 14px 0; display: flex; gap: 12px; align-items: flex-start; }
-.risk-box .icon { font-size: 1.2rem; }
-.risk-box strong { color: var(--red); }
-.empty-state { padding: 50px 20px; text-align: center; color: var(--muted); }
-.empty-state .icon { font-size: 2.5rem; opacity: 0.3; margin-bottom: 12px; }
-.empty-state h3 { font-size: 1rem; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
-.empty-state p { font-size: 0.8rem; }
-
-/* DOCUMENT TILES */
-.doc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
-.doc-tile { background: var(--elevated); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; text-align: center; }
-.doc-tile .icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.4; }
-.doc-tile .title { font-weight: 700; font-size: 0.85rem; margin-bottom: 4px; color: var(--text); }
-.doc-tile .meta { font-size: 0.7rem; color: var(--muted); margin-bottom: 14px; }
-
-/* CHECKLIST */
-.checklist { list-style: none; padding: 0; }
-.checklist li { padding: 8px 0; padding-left: 26px; position: relative; font-size: 0.82rem; color: var(--text2); border-bottom: 1px dashed var(--border); }
-.checklist li::before { content: '\2610'; position: absolute; left: 4px; top: 8px; color: var(--muted); font-size: 0.95rem; }
-.checklist li.done { color: var(--muted); text-decoration: line-through; }
-.checklist li.done::before { content: '\2611'; color: var(--green); }
-
-/* FOOTER */
-footer { text-align: center; padding: 20px; font-size: 0.64rem; color: var(--muted); border-top: 1px solid var(--border); margin-top: 24px; }
-
-/* SPINNER / TOAST */
-.spinner { width: 14px; height: 14px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; color: #fff; z-index: 1000; transform: translateY(100px); opacity: 0; transition: all 0.3s ease; }
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.success { background: var(--green); }
-.toast.error { background: var(--red); }
-
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .chart-grid { grid-template-columns: 1fr; }
-  .mg { grid-template-columns: repeat(2, 1fr); }
-  .header { padding: 12px 16px; }
-  .content { padding: 16px; }
-}
-@media (max-width: 600px) {
-  html, body { overflow-x: hidden; width: 100%; max-width: 100vw; }
-  .header { padding: 10px 12px; flex-direction: column; align-items: flex-start; gap: 6px; }
-  .header-left h1 { font-size: 0.9rem; }
-  .header-left .sub { display: none; }
-  .header-left img { height: 32px; }
-  .header-right { width: 100%; justify-content: space-between; }
-  .header-right img { height: 28px; }
-  .nav { padding: 4px 8px; top: auto; position: relative; flex-wrap: wrap; }
-  .nav-btn { padding: 8px 10px; font-size: 0.66rem; }
-  .nav-dropdown { min-width: 200px; }
-  .nav-drop-item { padding: 8px 14px; font-size: 0.72rem; }
-  .content { padding: 10px; max-width: 100vw; overflow-x: hidden; }
-  .mg { grid-template-columns: 1fr !important; gap: 8px; }
-  .m { padding: 12px 14px; }
-  .m-value { font-size: 1.1rem; }
-  .card-h h2 { font-size: 0.85rem; }
-  .card-b { padding: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { font-size: 0.7rem; white-space: nowrap; }
-  .chart-wrap { height: 240px; }
-  .btn { padding: 6px 10px; font-size: 0.66rem; }
-}
-@media print { body { background: #fff; color: #000; } .header, .nav { position: static; } .card { break-inside: avoid; border: 1px solid #ddd; } .panel { display: block !important; } #loginPage { display: none !important; } #appPage { display: block !important; } }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--offwhite);color:var(--ink);font-size:14px}
+header{background:var(--charcoal);color:#fff;padding:22px 32px;border-bottom:4px solid var(--yellow)}
+header .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--yellow);text-transform:uppercase}
+header h1{font-family:'Archivo',sans-serif;font-size:22px;font-weight:700;margin-top:4px}
+header .sub{font-size:12px;color:#c4ccd4;margin-top:4px}
+.badge{display:inline-block;background:var(--yellow);color:var(--charcoal);font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;padding:2px 8px;border-radius:3px;letter-spacing:.08em;margin-left:8px;vertical-align:middle}
+nav{display:flex;gap:2px;background:var(--charcoal);padding:0 32px}
+nav button{background:transparent;border:none;color:#c4ccd4;font-family:'Archivo',sans-serif;font-size:13px;font-weight:600;padding:12px 18px;cursor:pointer;border-bottom:3px solid transparent}
+nav button.active{color:#fff;border-bottom-color:var(--yellow)}
+nav button:hover{color:#fff}
+main{max-width:1240px;margin:0 auto;padding:28px 32px 64px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-bottom:26px}
+.kpi{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--yellow);border-radius:6px;padding:16px 18px}
+.kpi .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600}
+.kpi .val{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:600;margin-top:6px}
+.kpi .note{font-size:11px;color:var(--muted);margin-top:4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin-bottom:22px}
+.card h2{font-family:'Archivo',sans-serif;font-size:15px;font-weight:700;color:var(--charcoal);margin-bottom:4px}
+.card .src{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-family:'Archivo',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:.06em;text-align:left;color:var(--muted);border-bottom:2px solid var(--charcoal);padding:8px 10px;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+td.r,th.r{text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+tr.total td{font-weight:700;border-top:2px solid var(--charcoal);border-bottom:none;background:#f4f0e6}
+tr.total td.r{font-family:'JetBrains Mono',monospace}
+.pos{color:var(--bad)} .neg{color:var(--good)}
+.pill{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:10px;white-space:nowrap}
+.pill.awarded{background:#e0f0e7;color:var(--good)}
+.pill.pending{background:#fdf3d7;color:#8a6d00}
+.pill.notout{background:#eef0f2;color:var(--muted)}
+.pill.tender{background:#e3ecf7;color:#2b5c9e}
+.notice{background:#fdf3d7;border:1px solid #ecd98a;border-radius:6px;padding:12px 16px;font-size:12.5px;margin-bottom:22px}
+.notice strong{color:var(--charcoal)}
+.tab{display:none}.tab.active{display:block}
+.flow{display:flex;flex-direction:column;gap:0;margin:10px 0}
+.flowrow{display:flex;justify-content:space-between;align-items:baseline;padding:9px 12px;border-bottom:1px solid var(--line)}
+.flowrow .n{font-size:13px}
+.flowrow .v{font-family:'JetBrains Mono',monospace;font-size:13.5px}
+.flowrow.em{background:#f4f0e6;font-weight:700;border-top:2px solid var(--charcoal)}
+footer{max-width:1240px;margin:0 auto;padding:18px 32px;font-size:11px;color:var(--muted);border-top:1px solid var(--line)}
+.notes{font-size:11.5px;color:var(--muted);max-width:340px}
+@media(max-width:760px){main,nav,header{padding-left:16px;padding-right:16px}}
 </style>
 </head>
 <body>
+<header>
+  <div class="eyebrow">Metric Edge Cost &amp; Construction Consultants — Internal</div>
+  <h1 id="hd-title">ME-185 — The CO-OP, Erf 514, Zululami<span class="badge">INTERNAL — LIVE AFC</span></h1>
+  <div class="sub" id="hd-sub"></div>
+</header>
+<nav id="nav">
+  <button data-tab="overview" class="active">Overview</button>
+  <button data-tab="ps">Provisional Sums</button>
+  <button data-tab="appts">Appointments</button>
+  <button data-tab="contract">Main Contract</button>
+  <button data-tab="feas">Feasibility (Issued)</button>
+  <button data-tab="sys">System</button>
+</nav>
+<main>
+  <div class="notice"><strong>Frozen client document:</strong> the feasibility issued to the client on 12 June 2026 (erf-514-feasibility.vercel.app) is <strong>not</strong> modified by this platform. This is the internal working AFC position that will feed future cost reports.</div>
 
-<!-- LOGIN (not shown; auth disabled for consultant preview) -->
-<div id="loginPage">
-  <div class="login-card">
-    <h1>The Co-Op Zululami</h1>
-    <div class="login-sub">Consultant Budget Dashboard</div>
-    <div class="login-field"><label>Email</label><input type="email" id="loginEmail"></div>
-    <div class="login-field"><label>Password</label><input type="password" id="loginPassword"></div>
-    <button class="login-btn" id="loginBtn" onclick="doLogin()">Sign In</button>
-    <div class="login-error" id="loginError"></div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="appPage">
-
-<div class="header">
-  <div class="header-left">
-    <div>
-      <h1>The Co-Op Zululami</h1>
-      <div class="sub">Retail &amp; Commercial &#8226; Erf 514 Zululami &#8226; Consultant Dashboard</div>
+  <div id="tab-overview" class="tab active">
+    <div class="kpis" id="kpis"></div>
+    <div class="card">
+      <h2>Anticipated Final Cost — Construction Roll-up</h2>
+      <div class="src" id="afc-src"></div>
+      <div class="flow" id="afc-flow"></div>
     </div>
-  </div>
-  <div class="header-right">
-    <span class="header-audience">Consultants only</span>
-  </div>
-</div>
-
-<div class="nav" id="mainNav">
-  <div class="nav-item">
-    <button class="nav-btn" onclick="toggleDrop(this)">Budget Comparison <span class="arrow">&#9662;</span></button>
-    <div class="nav-dropdown">
-      <button class="nav-drop-item active" onclick="navTo('overview',this)"><span class="status-dot live"></span>Overview &mdash; All Buildings</button>
-      <button class="nav-drop-item" onclick="navTo('building-a',this)"><span class="status-dot live"></span>Building A &mdash; Full Report</button>
-      <button class="nav-drop-item" onclick="navTo('building-b',this)"><span class="status-dot pending"></span>Building B</button>
-      <button class="nav-drop-item" onclick="navTo('building-c',this)"><span class="status-dot pending"></span>Building C</button>
-      <button class="nav-drop-item" onclick="navTo('common-areas',this)"><span class="status-dot pending"></span>General Common Areas</button>
-      <button class="nav-drop-item" onclick="navTo('external-works',this)"><span class="status-dot pending"></span>External Works</button>
-      <button class="nav-drop-item" onclick="navTo('cross-packages',this)"><span class="status-dot live"></span>Cross-Building Packages</button>
-    </div>
-  </div>
-  <div class="nav-item">
-    <button class="nav-btn" onclick="toggleDrop(this)">Tender Documentation <span class="arrow">&#9662;</span></button>
-    <div class="nav-dropdown">
-      <button class="nav-drop-item" onclick="navTo('tender-piling',this)"><span class="status-dot live"></span>Piling &mdash; LIVE</button>
-      <button class="nav-drop-item" onclick="navTo('tender-aluminium',this)"><span class="status-dot pending"></span>Aluminium Windows</button>
-      <button class="nav-drop-item" onclick="navTo('tender-pt',this)"><span class="status-dot pending"></span>Post-Tensioning</button>
-      <button class="nav-drop-item" onclick="navTo('tender-bulkearth',this)"><span class="status-dot pending"></span>Bulk Earthworks</button>
-    </div>
-  </div>
-  <div class="nav-item">
-    <button class="nav-btn" onclick="navTo('drawings',this)">Drawings</button>
-  </div>
-  <div class="nav-item">
-    <button class="nav-btn" onclick="navTo('feasibility',this)">Feasibility Reference</button>
-  </div>
-</div>
-
-<div class="content">
-
-<!-- OVERVIEW -->
-<div class="panel active" id="panel-overview">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Total Project (ex VAT)</div><div class="m-value">R 88,719,634</div><div class="m-sub">Feasibility Nov 2025 &mdash; all-in</div></div>
-    <div class="m gold"><div class="m-label">Builders &amp; Ext Works (ex Prelims)</div><div class="m-value">R 54,001,335</div><div class="m-sub">Hard cost base</div></div>
-    <div class="m orange"><div class="m-label">Building A Stage 4 (Apr 2026)</div><div class="m-value">R 12,028,724</div><div class="m-sub">Provisional BOQ</div></div>
-    <div class="m red"><div class="m-label">Building A Variance</div><div class="m-value" style="color:var(--red)">+R 1,492,986</div><div class="m-sub">+14.2% vs Stage 2 / Budget</div></div>
-  </div>
-
-  <div class="info-box" style="background:rgba(22,163,74,0.06);border-color:rgba(22,163,74,0.2)">
-    <strong>One baseline:</strong> The Stage 2 Elemental Estimate (Final Issued 30 July 2025) is also the feasibility builders-works baseline (R 59,401,469 incl. Prelims). Stage 2 = Budget = Feasibility at building level. All variance calculations use this single authoritative baseline.
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Feasibility &mdash; High-Level Breakdown</h2><span class="badge b-indigo">Nov 2025 &mdash; Option A rev1</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th>Cost Group</th><th class="r" style="width:120px">Rate</th><th class="r" style="width:180px">Amount (R)</th><th class="r" style="width:100px">% of Total</th></tr></thead>
-        <tbody>
-          <tr><td>Builders &amp; External Works + Prelims @ 10%</td><td class="r">&mdash;</td><td class="r">59,401,469</td><td class="r">67.0%</td></tr>
-          <tr><td>Contingency</td><td class="r">4.5%</td><td class="r">2,673,066</td><td class="r">3.0%</td></tr>
-          <tr><td>Escalation (pre-contract + contract)</td><td class="r">5% p.a.</td><td class="r">3,861,096</td><td class="r">4.4%</td></tr>
-          <tr><td>Other costs (mini sub, connections, signage)</td><td class="r">&mdash;</td><td class="r">1,800,000</td><td class="r">2.0%</td></tr>
-          <tr><td>Professional fees (+ geotech + DMF)</td><td class="r">10% + 1%</td><td class="r">7,302,919</td><td class="r">8.2%</td></tr>
-          <tr><td>Property costs (rates, legal, marketing, letting)</td><td class="r">&mdash;</td><td class="r">3,350,000</td><td class="r">3.8%</td></tr>
-          <tr><td>Finance costs (interest @ 10.5% + raising fee @ 1.5%)</td><td class="r">&mdash;</td><td class="r">6,114,307</td><td class="r">6.9%</td></tr>
-          <tr><td>Land cost allocation</td><td class="r">&mdash;</td><td class="r">4,216,777</td><td class="r">4.8%</td></tr>
-          <tr class="row-total"><td><strong>TOTAL EXCL. VAT</strong></td><td class="r"></td><td class="r"><strong>88,719,634</strong></td><td class="r"><strong>100.0%</strong></td></tr>
-          <tr><td>Less: sales income (GF retail + 2F Block C)</td><td class="r">&mdash;</td><td class="r">(24,696,000)</td><td class="r">&mdash;</td></tr>
-          <tr class="row-total" style="background:rgba(22,163,74,0.08)"><td><strong>NET DEVELOPMENT COST (after sales)</strong></td><td class="r"></td><td class="r" style="color:var(--green)"><strong>64,023,634</strong></td><td class="r"></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="info-box" style="margin:0;border-radius:0;border:none;border-top:1px solid var(--border)">
-      Yield on capital <strong>9.96%</strong> based on R 6,376,224/annum (rental R 5,964,624 + parking R 411,600) against net development cost. Full line-by-line breakdown in Feasibility Reference tab.
+    <div class="card">
+      <h2>Provisional Sums — Position</h2>
+      <div class="src">Awarded packages vs balance still to procure</div>
+      <div class="flow" id="ps-flow"></div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-h"><h2>Building-Level Snapshot</h2><span class="badge b-gold">Stage 2 vs Stage 4 &mdash; 14 April 2026</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead>
-          <tr><th>Building / Area</th><th class="r">Feasibility (Nov 2025)</th><th class="r">Stage 2 (Jul 2025)</th><th class="r">Stage 4 (Apr 2026)</th><th class="r">Variance (Stage 4 vs Feas)</th><th>Status</th></tr>
-        </thead>
-        <tbody>
-          <tr class="row-red"><td><strong>Building A</strong></td><td class="r">R 10,535,738</td><td class="r">R 10,535,738</td><td class="r">R 12,028,724</td><td class="r" style="color:var(--red);font-weight:700">+R 1,492,986 (+14.2%)</td><td><span class="badge b-red">Above budget</span></td></tr>
-          <tr class="row-grey"><td><strong>Building B</strong></td><td class="r">R 7,552,630</td><td class="r">R 7,552,630</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td><span class="badge b-grey">Stage 4 pending</span></td></tr>
-          <tr class="row-grey"><td><strong>Building C</strong></td><td class="r">R 20,779,088</td><td class="r">R 20,779,088</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td><span class="badge b-grey">Stage 4 pending</span></td></tr>
-          <tr class="row-grey"><td><strong>General Common Areas</strong></td><td class="r">R 3,415,287</td><td class="r">R 3,415,287</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td><span class="badge b-grey">Stage 4 pending</span></td></tr>
-          <tr class="row-grey"><td><strong>External Works</strong></td><td class="r">R 11,718,592</td><td class="r">R 11,718,592</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td><span class="badge b-grey">Stage 4 pending</span></td></tr>
-          <tr class="row-total"><td><strong>Sub-total &mdash; Builders &amp; External Works</strong></td><td class="r">R 54,001,335</td><td class="r">R 54,001,335</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td></td></tr>
-          <tr><td>Preliminaries @ 10%</td><td class="r">R 5,400,134</td><td class="r">R 5,400,134</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td></td></tr>
-          <tr class="row-total"><td><strong>Grand Total (ex VAT, ex Contingency)</strong></td><td class="r">R 59,401,469</td><td class="r">R 59,401,469</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td></td></tr>
-        </tbody>
-      </table>
+  <div id="tab-ps" class="tab">
+    <div class="card">
+      <h2>Provisional Sums Tracker</h2>
+      <div class="src" id="ps-src"></div>
+      <table id="ps-table"></table>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-h"><h2>Cross-Building Packages &mdash; Progress To-Date</h2></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th>Package</th><th class="r">Stage 2</th><th class="r">Stage 4</th><th class="r">Variance</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr class="row-green"><td><strong>Electrical (Combined)</strong></td><td class="r">R 6,927,640</td><td class="r">R 4,586,749</td><td class="r" style="color:var(--green);font-weight:700">&minus;R 2,340,891 (&minus;33.8%)</td><td><span class="badge b-green">PRICED &mdash; saving</span></td></tr>
-          <tr class="row-red"><td><strong>Piling</strong></td><td class="r">R 867,754</td><td class="r">R 1,407,000</td><td class="r" style="color:var(--red);font-weight:700">+R 539,246 (+62.1%)</td><td><span class="badge b-red">PRICED &mdash; overrun</span></td></tr>
-          <tr class="row-grey"><td><strong>HVAC</strong></td><td class="r">R 4,907,773</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td><span class="badge b-grey">Outstanding</span></td></tr>
-          <tr class="row-grey"><td><strong>Lift</strong></td><td class="r">R 1,575,000</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td><span class="badge b-grey">Outstanding</span></td></tr>
-        </tbody>
-      </table>
+  <div id="tab-appts" class="tab">
+    <div class="card">
+      <h2>Main &amp; Subcontractor Appointments</h2>
+      <div class="src">Contract instructions issued under the JBCC Principal Building Agreement</div>
+      <table id="appt-table"></table>
     </div>
   </div>
 
-  <div class="chart-grid">
-    <div class="chart-card"><h3>Feasibility Allowance by Building</h3><div class="chart-wrap"><canvas id="chartFeas"></canvas></div></div>
-    <div class="chart-card"><h3>Building A &mdash; Feas vs Stage 2 vs Stage 4</h3><div class="chart-wrap"><canvas id="chartBuildingA"></canvas></div></div>
-  </div>
-
-  <div class="risk-box">
-    <div class="icon">&#9888;</div>
-    <div><strong>Portfolio risk flag:</strong> Building A Stage 4 is R 1,492,986 above Budget (Stage 2 / Feasibility = R 10,535,738). The Electrical package saving of R 2,340,891 partially offsets this (net +R 848K above Budget for priced items only). B / C / Common / External have not yet been priced at Stage 4.</div>
-  </div>
-</div>
-
-<!-- BUILDING A -->
-<div class="panel" id="panel-building-a">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Stage 2 / Budget / Feasibility</div><div class="m-value">R 10,535,738</div><div class="m-sub">Elemental Estimate &mdash; 30 Jul 2025 Final</div></div>
-    <div class="m gold"><div class="m-label">GBA</div><div class="m-value">909 m&#178;</div><div class="m-sub">R 11,590 / m&#178;</div></div>
-    <div class="m red"><div class="m-label">Stage 4 BOQ (Apr 2026)</div><div class="m-value">R 12,028,724</div><div class="m-sub">Provisional BOQ</div></div>
-    <div class="m red"><div class="m-label">Variance vs Budget</div><div class="m-value" style="color:var(--red)">+R 1,492,986</div><div class="m-sub">+14.2%</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Stage 2 Elemental Budget &mdash; Building A</h2><span class="badge b-indigo">21 ASAQS Elements &mdash; Final Issued 30 July 2025</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th style="width:48px">Ref</th><th>Element</th><th class="r" style="width:80px">Area (m&#178;)</th><th class="r" style="width:110px">Rate (R/m&#178;)</th><th class="r" style="width:160px">Amount (R)</th></tr></thead>
-        <tbody>
-          <tr><td>1.0</td><td>Sub Structure</td><td class="r">909</td><td class="r">758</td><td class="r">688,947</td></tr>
-          <tr><td>2.0</td><td>Ground Floor Construction</td><td class="r">909</td><td class="r">363</td><td class="r">330,142</td></tr>
-          <tr><td>3.0</td><td>Structural Frame</td><td class="r">909</td><td class="r">2,016</td><td class="r">1,832,149</td></tr>
-          <tr><td>4.0</td><td>Structural Steelwork</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>5.0</td><td>External Envelope</td><td class="r">909</td><td class="r">2,098</td><td class="r">1,907,222</td></tr>
-          <tr><td>6.0</td><td>Roofs</td><td class="r">909</td><td class="r">1,101</td><td class="r">1,000,600</td></tr>
-          <tr><td>7.0</td><td>Internal Divisions</td><td class="r">909</td><td class="r">707</td><td class="r">642,950</td></tr>
-          <tr><td>8.0</td><td>Floor Finishes</td><td class="r">909</td><td class="r">584</td><td class="r">531,171</td></tr>
-          <tr><td>9.0</td><td>Internal Wall Finishes</td><td class="r">909</td><td class="r">120</td><td class="r">108,660</td></tr>
-          <tr><td>10.0</td><td>Ceilings</td><td class="r">909</td><td class="r">479</td><td class="r">435,542</td></tr>
-          <tr><td>11.0</td><td>Fittings &amp; Fixed Equipment</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>12.0</td><td>Electrical Installation</td><td class="r">909</td><td class="r">963</td><td class="r">874,940</td></tr>
-          <tr><td>13.0</td><td>Electronic Installation</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>14.0</td><td>Mechanical &amp; HVAC</td><td class="r">909</td><td class="r">1,037</td><td class="r">942,375</td></tr>
-          <tr><td>15.0</td><td>Plumbing &amp; Drainage</td><td class="r">909</td><td class="r">1,365</td><td class="r">1,241,040</td></tr>
-          <tr><td>16.0</td><td>Fire Services</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>17.0</td><td>Balustrading &amp; Handrails</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>18.0</td><td>Special Installations</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>19.0</td><td>External Works &amp; Services</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>20.0</td><td>Bulk Earthworks</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>21.0</td><td>Other</td><td class="r">909</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr class="row-total"><td></td><td><strong>BUILDING A TOTAL (Stage 2 / Budget)</strong></td><td class="r">909</td><td class="r">11,590</td><td class="r">10,535,738</td></tr>
-        </tbody>
-      </table>
+  <div id="tab-contract" class="tab">
+    <div class="card">
+      <h2>Main Contract — Slingshot (Final BOQ)</h2>
+      <div class="src" id="ct-src"></div>
+      <table id="ct-table"></table>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-h"><h2>Stage 4 BOQ &mdash; Provisional Movement Analysis (12-bill re-cut)</h2><span class="badge b-gold">Stage 2 vs Stage 4</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th style="width:42px">Bill</th><th>Description</th><th class="r">Stage 2 (R)</th><th class="r">Stage 4 (R)</th><th class="r">Variance (R)</th><th class="r">%</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>Earthworks</td><td class="r">194,099</td><td class="r">194,099</td><td class="r">&mdash;</td><td class="r">0%</td></tr>
-          <tr class="row-green"><td>2</td><td>Concrete, Reinforcement &amp; Formwork</td><td class="r">3,420,810</td><td class="r">2,445,290</td><td class="r" style="color:var(--green);font-weight:700">(975,520)</td><td class="r" style="color:var(--green)">&minus;28.5%</td></tr>
-          <tr><td>3</td><td>Masonry</td><td class="r">481,296</td><td class="r">489,247</td><td class="r">7,951</td><td class="r">+1.7%</td></tr>
-          <tr class="row-red"><td>4</td><td>Waterproofing</td><td class="r">145,238</td><td class="r">348,381</td><td class="r" style="color:var(--red);font-weight:700">203,143</td><td class="r" style="color:var(--red)">+139.9%</td></tr>
-          <tr><td>5</td><td>Carpentry &amp; Joinery</td><td class="r">39,530</td><td class="r">44,200</td><td class="r">4,670</td><td class="r">+11.8%</td></tr>
-          <tr class="row-amber"><td>6</td><td>Ceilings</td><td class="r">465,615</td><td class="r">379,575</td><td class="r" style="color:var(--green)">(86,040)</td><td class="r" style="color:var(--green)">&minus;18.5%</td></tr>
-          <tr class="row-green"><td>7</td><td>Structural Steel</td><td class="r">532,810</td><td class="r">14,000</td><td class="r" style="color:var(--green);font-weight:700">(518,810)</td><td class="r" style="color:var(--green)">&minus;97.4%</td></tr>
-          <tr><td>8</td><td>Plastering</td><td class="r">305,090</td><td class="r">234,180</td><td class="r" style="color:var(--green)">(70,910)</td><td class="r" style="color:var(--green)">&minus;23.2%</td></tr>
-          <tr class="row-red"><td>9</td><td>Tiling</td><td class="r">66,300</td><td class="r">138,600</td><td class="r" style="color:var(--red);font-weight:700">72,300</td><td class="r" style="color:var(--red)">+109.0%</td></tr>
-          <tr class="row-amber"><td>10</td><td>Plumbing</td><td class="r">18,000</td><td class="r">24,000</td><td class="r">6,000</td><td class="r">+33.3%</td></tr>
-          <tr class="row-amber"><td>11</td><td>Paintwork</td><td class="r">237,934</td><td class="r">303,460</td><td class="r">65,526</td><td class="r">+27.5%</td></tr>
-          <tr class="row-red"><td>12</td><td>Provisional Sums</td><td class="r">4,560,650</td><td class="r">7,413,693</td><td class="r" style="color:var(--red);font-weight:700">2,853,043</td><td class="r" style="color:var(--red)">+62.6%</td></tr>
-          <tr class="row-total"><td></td><td><strong>BILL SUB-TOTAL</strong></td><td class="r">10,467,372</td><td class="r">12,028,724</td><td class="r" style="color:var(--red)">1,561,352</td><td class="r" style="color:var(--red)">+14.9%</td></tr>
-          <tr><td></td><td>Reconciliation to Stage 2 Elemental</td><td class="r">68,366</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr class="row-total"><td></td><td><strong>TOTAL &mdash; BUILDING A (Authoritative)</strong></td><td class="r">10,535,738</td><td class="r">12,028,724</td><td class="r" style="color:var(--red)">1,492,986</td><td class="r" style="color:var(--red)">+14.2%</td></tr>
-        </tbody>
-      </table>
+  <div id="tab-feas" class="tab">
+    <div class="card">
+      <h2>Feasibility Summary — as issued 12 June 2026 (frozen)</h2>
+      <div class="src" id="fs-src"></div>
+      <table id="fs-table"></table>
     </div>
   </div>
 
-  <div class="info-box">
-    <strong>Reclassification note:</strong> Bill 2 (Concrete &minus;R975K) and Bill 7 (Structural Steel &minus;R519K) reductions are not true savings. Post-tensioning, polished concrete and roof steelwork were moved into Bill 12 Provisional Sums. Net movement is design-driven.<br><br>
-    <strong>Reconciliation:</strong> The 12-bill re-cut sums to R 10,467,372 &mdash; the authoritative Stage 2 Elemental Estimate is R 10,535,738 (difference of R 68,366 due to element-vs-bill structural differences). The authoritative variance vs Budget is <strong>+R 1,492,986 (+14.2%)</strong>.
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Design Change Drivers (Architect-Driven)</h2><span class="badge b-red">9 items &mdash; net +R 1,561,352</span></div>
-    <div class="card-b">
-      <div class="driver-grid">
-
-        <div class="driver up">
-          <div class="driver-top"><h4>1. Marmoran "Permasuede" Finish</h4><span class="delta up">+R 182,000</span></div>
-          <p>NEW item. 192m&#178; external walls @ R750/m&#178; + 40m&#178; narrow widths @ R950/m&#178;. Replaces standard paint on these elevations. Licensed Marmoran applicator, 15-year international guarantee. Colour: "Sushi Wrap".</p>
-        </div>
-
-        <div class="driver up">
-          <div class="driver-top"><h4>2. Wall Tiling Upgrade</h4><span class="delta up">+R 72,300</span></div>
-          <p>PC tile rate doubled (R350 &rarr; R750/m&#178;). Area increased 102 &rarr; 132m&#178;. Architect upgraded external wall tiling specification.</p>
-        </div>
-
-        <div class="driver up">
-          <div class="driver-top"><h4>3. Steel Staircase + Cage</h4><span class="delta up">+R 250,000</span></div>
-          <p>Staircase R100K &rarr; R250K (+R150K). Fence &amp; gate around staircase R50K &rarr; R150K (+R100K). Per Drg 800 (metalwork).</p>
-        </div>
-
-        <div class="driver up">
-          <div class="driver-top"><h4>4. Aluminium Trimmers &amp; Flashings</h4><span class="delta up">+R 84,350</span></div>
-          <p>ALL NEW: sill plates 48m, F-T Capco drips 45m, slab edge sill 38m, header capping 84m, parapet capping 26m &mdash; 241m total at R350/m. Per Drg 901 / 902.</p>
-        </div>
-
-        <div class="driver up">
-          <div class="driver-top"><h4>5. Waterproofing Extension</h4><span class="delta up">+R 203,143</span></div>
-          <p>Derbigum doubled (190 &rarr; 436m&#178;), rate R550 &rarr; R650/m&#178;. New: reveals &amp; thresholds 275m @ R200/m = R55,000. +139.9%.</p>
-        </div>
-
-        <div class="driver up">
-          <div class="driver-top"><h4>6. Balustrading &amp; Handrails</h4><span class="delta up">+R 105,000</span></div>
-          <p>Balustrades R120K &rarr; R200K. New handrail PS R25,000. Per Drg 603.</p>
-        </div>
-
-        <div class="driver reclass">
-          <div class="driver-top"><h4>7. Post-Tensioning</h4><span class="delta reclass">+R 297,500</span></div>
-          <p>Area doubled 402 &rarr; 827m&#178; @ R700/m&#178; (R281K &rarr; R579K). Moved from Bill 2 to Bill 12 provisional sums.</p>
-        </div>
-
-        <div class="driver reclass">
-          <div class="driver-top"><h4>8. Polished Concrete Floors</h4><span class="delta reclass">+R 157,200</span></div>
-          <p>Area increased 634 &rarr; 1,027m&#178; @ R400/m&#178; (R254K &rarr; R411K). Moved from Bill 2 to Bill 12.</p>
-        </div>
-
-        <div class="driver reclass">
-          <div class="driver-top"><h4>9. Roof Construction</h4><span class="delta reclass">+R 231,190</span></div>
-          <p>R350K &rarr; R1,100K gross; consolidates roof steelwork previously in Bill 7 (R532,810). Net +R231,190 after reclass.</p>
-        </div>
-
+  <div id="tab-sys" class="tab">
+    <div class="card">
+      <h2>How this platform updates</h2>
+      <div style="font-size:13px;line-height:1.7">
+        <p>The Excel workbooks in OneDrive remain the masters. This site is generated from three specific sheets:</p>
+        <table style="margin:12px 0">
+          <tr><th>Master workbook</th><th>Sheet</th><th>Drives</th></tr>
+          <tr><td>Zululami - Provisional Sums Tracker.xlsx</td><td>PS Tracker</td><td>PS tab, AFC adjustments, appointment amounts</td></tr>
+          <tr><td>ME-185 - Final BOQ export - Main Contract - Budget.xlsx</td><td>Summary</td><td>Main Contract baseline (Slingshot)</td></tr>
+          <tr><td>Erf 514 - Revised final feasibility - June 2026.xlsx</td><td>final summary</td><td>Feasibility reference (frozen)</td></tr>
+        </table>
+        <p>To publish an update: change the sheet, save, then ask Claude to <em>"publish the CO-OP 514 budget platform"</em> — the publish script re-reads the masters, regenerates the data, and redeploys. Every publish is date-stamped below the header.</p>
+        <p style="margin-top:10px">Planned next: change-log of every AFC movement per publish, client-facing filtered view, and PPS/cost-report integration.</p>
       </div>
     </div>
   </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Budget &amp; Feasibility Impact &mdash; Building A</h2><span class="badge b-red">Above budget</span></div>
-    <div class="card-b">
-      <p style="font-size:0.85rem;color:var(--text2);line-height:1.6">The Stage 2 Elemental Estimate (Final Issued 30 July 2025) allowed <strong>R 10,535,738</strong> for Building A. The November 2025 feasibility (Option A rev1) uses this same figure as its builders-works allowance. Stage 4 BOQ is now at <strong>R 12,028,724</strong>, <strong style="color:var(--red)">+R 1,492,986 (+14.2%)</strong> above the Stage 2 / Budget / Feasibility baseline. The feasibility model requires updating to reflect the architect-driven design changes captured above.</p>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Next Steps &mdash; Building A</h2></div>
-    <div class="card-b">
-      <ul class="checklist">
-        <li>Client to acknowledge design-driven increases</li>
-        <li>Review Marmoran spec and tiling PC rate with architect</li>
-        <li>Confirm steel staircase / cage design acceptance</li>
-        <li>Update feasibility model with new Building A allowance</li>
-        <li>Building B movement report (next)</li>
-        <li>Building C movement report</li>
-        <li>Common Areas movement report</li>
-        <li>External Works movement report</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- BUILDING B / C / COMMON / EXTERNAL (pending) -->
-<div class="panel" id="panel-building-b">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Stage 2 / Budget / Feasibility</div><div class="m-value">R 7,552,630</div><div class="m-sub">Elemental Estimate &mdash; 30 Jul 2025 Final</div></div>
-    <div class="m gold"><div class="m-label">GBA</div><div class="m-value">603 m&#178;</div><div class="m-sub">R 12,525 / m&#178;</div></div>
-    <div class="m grey"><div class="m-label">Stage 4 BOQ</div><div class="m-value" style="color:var(--muted)">Pending</div><div class="m-sub">Not yet priced</div></div>
-    <div class="m grey"><div class="m-label">Variance</div><div class="m-value" style="color:var(--muted)">&mdash;</div><div class="m-sub">Awaiting Stage 4</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Stage 2 Elemental Budget &mdash; Building B</h2><span class="badge b-indigo">21 ASAQS Elements &mdash; Final Issued 30 July 2025</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th style="width:48px">Ref</th><th>Element</th><th class="r" style="width:80px">Area (m&#178;)</th><th class="r" style="width:110px">Rate (R/m&#178;)</th><th class="r" style="width:160px">Amount (R)</th></tr></thead>
-        <tbody>
-          <tr><td>1.0</td><td>Sub Structure</td><td class="r">603</td><td class="r">908</td><td class="r">547,668</td></tr>
-          <tr><td>2.0</td><td>Ground Floor Construction</td><td class="r">603</td><td class="r">363</td><td class="r">218,693</td></tr>
-          <tr><td>3.0</td><td>Structural Frame</td><td class="r">603</td><td class="r">1,951</td><td class="r">1,176,559</td></tr>
-          <tr><td>4.0</td><td>Structural Steelwork</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>5.0</td><td>External Envelope</td><td class="r">603</td><td class="r">2,237</td><td class="r">1,348,837</td></tr>
-          <tr><td>6.0</td><td>Roofs</td><td class="r">603</td><td class="r">1,140</td><td class="r">687,150</td></tr>
-          <tr><td>7.0</td><td>Internal Divisions</td><td class="r">603</td><td class="r">628</td><td class="r">378,840</td></tr>
-          <tr><td>8.0</td><td>Floor Finishes</td><td class="r">603</td><td class="r">773</td><td class="r">466,121</td></tr>
-          <tr><td>9.0</td><td>Internal Wall Finishes</td><td class="r">603</td><td class="r">172</td><td class="r">103,485</td></tr>
-          <tr><td>10.0</td><td>Ceilings</td><td class="r">603</td><td class="r">471</td><td class="r">284,220</td></tr>
-          <tr><td>11.0</td><td>Fittings &amp; Fixed Equipment</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>12.0</td><td>Electrical Installation</td><td class="r">603</td><td class="r">1,116</td><td class="r">672,980</td></tr>
-          <tr><td>13.0</td><td>Electronic Installation</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>14.0</td><td>Mechanical &amp; HVAC</td><td class="r">603</td><td class="r">1,303</td><td class="r">785,820</td></tr>
-          <tr><td>15.0</td><td>Plumbing &amp; Drainage</td><td class="r">603</td><td class="r">1,463</td><td class="r">882,255</td></tr>
-          <tr><td>16.0</td><td>Fire Services</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>17.0</td><td>Balustrading &amp; Handrails</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>18.0</td><td>Special Installations</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>19.0</td><td>External Works &amp; Services</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>20.0</td><td>Bulk Earthworks</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>21.0</td><td>Other</td><td class="r">603</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr class="row-total"><td></td><td><strong>BUILDING B TOTAL (Stage 2 / Budget)</strong></td><td class="r">603</td><td class="r">12,525</td><td class="r">7,552,630</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card"><div class="card-h"><h2>Stage 4 Movement Report &mdash; Building B</h2><span class="badge b-grey">Outstanding</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128203;</div><h3>Stage 4 report in preparation</h3><p>Stage 4 BOQ for Building B will populate here as design develops and pricing is completed.</p></div></div>
-  </div>
-</div>
-
-<div class="panel" id="panel-building-c">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Stage 2 / Budget / Feasibility</div><div class="m-value">R 20,779,088</div><div class="m-sub">Elemental Estimate &mdash; 30 Jul 2025 Final</div></div>
-    <div class="m gold"><div class="m-label">GBA</div><div class="m-value">1,887 m&#178;</div><div class="m-sub">R 11,012 / m&#178; &mdash; largest building</div></div>
-    <div class="m grey"><div class="m-label">Stage 4 BOQ</div><div class="m-value" style="color:var(--muted)">Pending</div><div class="m-sub">Not yet priced</div></div>
-    <div class="m grey"><div class="m-label">Variance</div><div class="m-value" style="color:var(--muted)">&mdash;</div><div class="m-sub">Awaiting Stage 4</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Stage 2 Elemental Budget &mdash; Building C</h2><span class="badge b-indigo">21 ASAQS Elements &mdash; Final Issued 30 July 2025</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th style="width:48px">Ref</th><th>Element</th><th class="r" style="width:80px">Area (m&#178;)</th><th class="r" style="width:110px">Rate (R/m&#178;)</th><th class="r" style="width:160px">Amount (R)</th></tr></thead>
-        <tbody>
-          <tr><td>1.0</td><td>Sub Structure</td><td class="r">1,887</td><td class="r">443</td><td class="r">835,631</td></tr>
-          <tr><td>2.0</td><td>Ground Floor Construction</td><td class="r">1,887</td><td class="r">376</td><td class="r">709,716</td></tr>
-          <tr><td>3.0</td><td>Structural Frame</td><td class="r">1,887</td><td class="r">2,699</td><td class="r">5,093,398</td></tr>
-          <tr><td>4.0</td><td>Structural Steelwork</td><td class="r">1,887</td><td class="r">191</td><td class="r">360,000</td></tr>
-          <tr><td>5.0</td><td>External Envelope</td><td class="r">1,887</td><td class="r">1,393</td><td class="r">2,629,263</td></tr>
-          <tr><td>6.0</td><td>Roofs</td><td class="r">1,887</td><td class="r">1,077</td><td class="r">2,031,650</td></tr>
-          <tr><td>7.0</td><td>Internal Divisions</td><td class="r">1,887</td><td class="r">93</td><td class="r">175,531</td></tr>
-          <tr><td>8.0</td><td>Floor Finishes</td><td class="r">1,887</td><td class="r">688</td><td class="r">1,297,764</td></tr>
-          <tr><td>9.0</td><td>Internal Wall Finishes</td><td class="r">1,887</td><td class="r">33</td><td class="r">62,091</td></tr>
-          <tr><td>10.0</td><td>Ceilings</td><td class="r">1,887</td><td class="r">474</td><td class="r">893,810</td></tr>
-          <tr><td>11.0</td><td>Fittings &amp; Fixed Equipment</td><td class="r">1,887</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>12.0</td><td>Electrical Installation</td><td class="r">1,887</td><td class="r">893</td><td class="r">1,685,420</td></tr>
-          <tr><td>13.0</td><td>Electronic Installation</td><td class="r">1,887</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>14.0</td><td>Mechanical &amp; HVAC</td><td class="r">1,887</td><td class="r">1,313</td><td class="r">2,477,790</td></tr>
-          <tr><td>15.0</td><td>Plumbing &amp; Drainage</td><td class="r">1,887</td><td class="r">260</td><td class="r">490,125</td></tr>
-          <tr><td>16.0</td><td>Fire Services</td><td class="r">1,887</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>17.0</td><td>Balustrading &amp; Handrails</td><td class="r">1,887</td><td class="r">201</td><td class="r">380,000</td></tr>
-          <tr><td>18.0</td><td>Special Installations (Lift)</td><td class="r">1,887</td><td class="r">835</td><td class="r">1,575,000</td></tr>
-          <tr><td>19.0</td><td>External Works &amp; Services</td><td class="r">1,887</td><td class="r">43</td><td class="r">81,900</td></tr>
-          <tr><td>20.0</td><td>Bulk Earthworks</td><td class="r">1,887</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>21.0</td><td>Other</td><td class="r">1,887</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr class="row-total"><td></td><td><strong>BUILDING C TOTAL (Stage 2 / Budget)</strong></td><td class="r">1,887</td><td class="r">11,012</td><td class="r">20,779,088</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card"><div class="card-h"><h2>Stage 4 Movement Report &mdash; Building C</h2><span class="badge b-grey">Outstanding</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128203;</div><h3>Stage 4 report in preparation</h3><p>Stage 4 BOQ for Building C will populate here as design develops and pricing is completed.</p></div></div>
-  </div>
-</div>
-
-<div class="panel" id="panel-common-areas">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Stage 2 / Budget / Feasibility</div><div class="m-value">R 3,415,287</div><div class="m-sub">Elemental Estimate &mdash; 30 Jul 2025 Final</div></div>
-    <div class="m gold"><div class="m-label">GBA</div><div class="m-value">993 m&#178;</div><div class="m-sub">R 3,439 / m&#178;</div></div>
-    <div class="m grey"><div class="m-label">Stage 4 BOQ</div><div class="m-value" style="color:var(--muted)">Pending</div><div class="m-sub">Not yet priced</div></div>
-    <div class="m grey"><div class="m-label">Variance</div><div class="m-value" style="color:var(--muted)">&mdash;</div><div class="m-sub">Awaiting Stage 4</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Stage 2 Elemental Budget &mdash; General Common Areas</h2><span class="badge b-indigo">21 ASAQS Elements &mdash; Final Issued 30 July 2025</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th style="width:48px">Ref</th><th>Element</th><th class="r" style="width:80px">Area (m&#178;)</th><th class="r" style="width:110px">Rate (R/m&#178;)</th><th class="r" style="width:160px">Amount (R)</th></tr></thead>
-        <tbody>
-          <tr><td>1.0</td><td>Sub Structure</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>2.0</td><td>Ground Floor Construction</td><td class="r">993</td><td class="r">577</td><td class="r">573,332</td></tr>
-          <tr><td>3.0</td><td>Structural Frame</td><td class="r">993</td><td class="r">1,149</td><td class="r">1,141,440</td></tr>
-          <tr><td>4.0</td><td>Structural Steelwork</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>5.0</td><td>External Envelope</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>6.0</td><td>Roofs</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>7.0</td><td>Internal Divisions</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>8.0</td><td>Floor Finishes</td><td class="r">993</td><td class="r">548</td><td class="r">544,430</td></tr>
-          <tr><td>9.0</td><td>Internal Wall Finishes</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>10.0</td><td>Ceilings</td><td class="r">993</td><td class="r">57</td><td class="r">56,785</td></tr>
-          <tr><td>11.0</td><td>Fittings &amp; Fixed Equipment</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>12.0</td><td>Electrical Installation</td><td class="r">993</td><td class="r">347</td><td class="r">344,300</td></tr>
-          <tr><td>13.0</td><td>Electronic Installation</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>14.0</td><td>Mechanical &amp; HVAC</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>15.0</td><td>Plumbing &amp; Drainage</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>16.0</td><td>Fire Services</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>17.0</td><td>Balustrading &amp; Handrails</td><td class="r">993</td><td class="r">408</td><td class="r">405,000</td></tr>
-          <tr><td>18.0</td><td>Special Installations</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>19.0</td><td>External Works (Timber deck)</td><td class="r">993</td><td class="r">352</td><td class="r">350,000</td></tr>
-          <tr><td>20.0</td><td>Bulk Earthworks</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr><td>21.0</td><td>Other</td><td class="r">993</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-          <tr class="row-total"><td></td><td><strong>COMMON AREAS TOTAL (Stage 2 / Budget)</strong></td><td class="r">993</td><td class="r">3,439</td><td class="r">3,415,287</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card"><div class="card-h"><h2>Stage 4 Movement Report &mdash; General Common Areas</h2><span class="badge b-grey">Outstanding</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128203;</div><h3>Stage 4 report in preparation</h3><p>Stage 4 BOQ for General Common Areas will populate here as design develops and pricing is completed.</p></div></div>
-  </div>
-</div>
-
-<div class="panel" id="panel-external-works">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Stage 2 / Budget / Feasibility</div><div class="m-value">R 11,718,592</div><div class="m-sub">Elemental Estimate &mdash; 30 Jul 2025 Final</div></div>
-    <div class="m gold"><div class="m-label">Site GBA</div><div class="m-value">3,399 m&#178;</div><div class="m-sub">R 3,448 / m&#178;</div></div>
-    <div class="m grey"><div class="m-label">Stage 4 BOQ</div><div class="m-value" style="color:var(--muted)">Pending</div><div class="m-sub">Not yet priced</div></div>
-    <div class="m grey"><div class="m-label">Variance</div><div class="m-value" style="color:var(--muted)">&mdash;</div><div class="m-sub">Awaiting Stage 4</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Stage 2 Budget &mdash; External Works Line Items</h2><span class="badge b-indigo">Element 20.0 Bulk Earthworks &amp; Site Services &mdash; Final Issued 30 July 2025</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th style="width:60px">Ref</th><th>Item</th><th class="r" style="width:80px">Qty</th><th style="width:60px">Unit</th><th class="r" style="width:120px">Rate (R)</th><th class="r" style="width:160px">Amount (R)</th></tr></thead>
-        <tbody>
-          <tr><td>20.1</td><td>Site Clearance</td><td class="r">5,550</td><td>m&#178;</td><td class="r">10</td><td class="r">55,500</td></tr>
-          <tr><td>20.2</td><td>Bulk Earthworks allowance</td><td class="r">8,325</td><td>m&#179;</td><td class="r">100</td><td class="r">832,500</td></tr>
-          <tr><td>20.3</td><td>Sewer allowance</td><td class="r">232</td><td>m</td><td class="r">850</td><td class="r">197,200</td></tr>
-          <tr><td>20.4</td><td>Stormwater (375mm max pipework)</td><td class="r">300</td><td>m</td><td class="r">850</td><td class="r">255,000</td></tr>
-          <tr><td>20.5</td><td>Water (75mm max pipework)</td><td class="r">320</td><td>m</td><td class="r">750</td><td class="r">240,000</td></tr>
-          <tr><td>20.6</td><td>Stormwater attenuation</td><td class="r">1</td><td>sum</td><td class="r">750,000</td><td class="r">750,000</td></tr>
-          <tr><td>20.7</td><td>Paved driveways (Corobrik Burgundy)</td><td class="r">2,959</td><td>m&#178;</td><td class="r">928</td><td class="r">2,746,544</td></tr>
-          <tr><td>20.8</td><td>Concrete kerbs</td><td class="r">522</td><td>m</td><td class="r">230</td><td class="r">120,060</td></tr>
-          <tr><td>20.9</td><td>Parking bay line painting</td><td class="r">1</td><td>item</td><td class="r">20,000</td><td class="r">20,000</td></tr>
-          <tr><td>20.10</td><td>Landscaping</td><td class="r">1</td><td>Psum</td><td class="r">1,000,000</td><td class="r">1,000,000</td></tr>
-          <tr><td>20.11</td><td>Electrical reticulation</td><td class="r">1</td><td>Psum</td><td class="r">2,500,000</td><td class="r">2,500,000</td></tr>
-          <tr><td>20.12</td><td>Retaining structure allowance</td><td class="r">1</td><td>Psum</td><td class="r">700,000</td><td class="r">700,000</td></tr>
-          <tr><td>20.13</td><td>Generator housing</td><td class="r">1</td><td>sum</td><td class="r">150,000</td><td class="r">150,000</td></tr>
-          <tr><td>20.14</td><td>Generator</td><td class="r">1</td><td>sum</td><td class="r">850,000</td><td class="r">850,000</td></tr>
-          <tr><td>20.15</td><td>Water storage &amp; related</td><td class="r">1</td><td>sum</td><td class="r">250,000</td><td class="r">250,000</td></tr>
-          <tr><td>20.16</td><td>Other</td><td class="r">1</td><td>sum</td><td class="r">350,000</td><td class="r">350,000</td></tr>
-          <tr><td>20.17</td><td>Fire protection allowance (Redline)</td><td class="r">1</td><td>sum</td><td class="r">701,789</td><td class="r">701,789</td></tr>
-          <tr class="row-total"><td></td><td><strong>EXTERNAL WORKS TOTAL (Stage 2 / Budget)</strong></td><td class="r"></td><td></td><td class="r">R 3,448/m&#178;</td><td class="r">11,718,592</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card"><div class="card-h"><h2>Stage 4 Movement Report &mdash; External Works</h2><span class="badge b-grey">Outstanding</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128203;</div><h3>Stage 4 report in preparation</h3><p>Bulk Earthworks and External Works tender packs are next in the pipeline. Line-by-line Stage 4 pricing will populate here as each package is priced.</p></div></div>
-  </div>
-</div>
-
-<!-- CROSS-BUILDING PACKAGES -->
-<div class="panel" id="panel-cross-packages">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m green"><div class="m-label">Electrical Package</div><div class="m-value" style="color:var(--green)">&minus;R 2,340,891</div><div class="m-sub">PRICED &mdash; saving</div></div>
-    <div class="m red"><div class="m-label">Piling Package</div><div class="m-value" style="color:var(--red)">+R 539,246</div><div class="m-sub">PRICED &mdash; overrun</div></div>
-    <div class="m grey"><div class="m-label">HVAC Package</div><div class="m-value" style="color:var(--muted)">Pending</div><div class="m-sub">Stage 2 R 4,907,773</div></div>
-    <div class="m grey"><div class="m-label">Lift Package</div><div class="m-value" style="color:var(--muted)">Pending</div><div class="m-sub">Stage 2 R 1,575,000</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Cross-Building Packages &mdash; Stage 2 vs Stage 4</h2></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th>Package</th><th class="r">Stage 2 (R)</th><th class="r">Stage 4 (R)</th><th class="r">Variance (R)</th><th class="r">%</th><th>Comment</th></tr></thead>
-        <tbody>
-          <tr class="row-green"><td><strong>Electrical (Combined)</strong></td><td class="r">6,927,640</td><td class="r">4,586,749</td><td class="r" style="color:var(--green);font-weight:700">(2,340,891)</td><td class="r" style="color:var(--green)">&minus;33.8%</td><td>Electrical package complete; below Stage 2 budget</td></tr>
-          <tr class="row-red"><td><strong>Piling</strong></td><td class="r">867,754</td><td class="r">1,407,000</td><td class="r" style="color:var(--red);font-weight:700">539,246</td><td class="r" style="color:var(--red)">+62.1%</td><td>Overrun driven by geotech; tender pack Rev C live</td></tr>
-          <tr class="row-grey"><td><strong>HVAC</strong></td><td class="r">4,907,773</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td>Outstanding &mdash; design in progress</td></tr>
-          <tr class="row-grey"><td><strong>Lift</strong></td><td class="r">1,575,000</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td>Outstanding &mdash; provisional</td></tr>
-          <tr class="row-total"><td><strong>Package Sub-total (priced only)</strong></td><td class="r">7,795,394</td><td class="r">5,993,749</td><td class="r" style="color:var(--green);font-weight:700">(1,801,645)</td><td class="r" style="color:var(--green)">&minus;23.1%</td><td>Net saving on priced packages to date</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="info-box">
-    <strong>How packages interact with buildings:</strong> Electrical, HVAC, Lift and Piling are procured as single cross-building packages but are apportioned back to Buildings A / B / C / Common Areas for the feasibility view. The building-level report (Building A tab) shows all-in values including the pro-rata of these packages.
-  </div>
-</div>
-
-<!-- TENDER: PILING (LIVE) -->
-<div class="panel" id="panel-tender-piling">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m green"><div class="m-label">Status</div><div class="m-value" style="color:var(--green);font-size:1.1rem">LIVE &mdash; Rev C</div><div class="m-sub">Issued 17 April 2026</div></div>
-    <div class="m gold"><div class="m-label">Stage 4 Pricing</div><div class="m-value">R 1,407,000</div><div class="m-sub">PRICED package</div></div>
-    <div class="m red"><div class="m-label">Variance vs Stage 2</div><div class="m-value" style="color:var(--red)">+R 539,246</div><div class="m-sub">+62.1% &mdash; geotech-driven</div></div>
-    <div class="m indigo"><div class="m-label">Form of Contract</div><div class="m-value" style="font-size:1rem">JBCC PBA</div><div class="m-sub">Contract Data included</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Piling Tender Pack &mdash; Rev C (17 April 2026)</h2><span class="badge b-green">LIVE</span></div>
-    <div class="card-b">
-      <p style="font-size:0.82rem;color:var(--text2);margin-bottom:16px">Latest issue: <strong>ME185-CO-OP-PILING-Tender-Document-Issued 17 April 2026 Rev C.pdf</strong>. Supporting civil and piling specifications below. Pricing schedule is issued as a separate xlsx.</p>
-      <div class="doc-grid">
-        <div class="doc-tile"><div class="icon">&#128196;</div><div class="title">Tender Document Rev C</div><div class="meta">JBCC PBA &mdash; 17 Apr 2026</div><a href="#" onclick="downloadFile('ME185/tender-piling/ME185-CO-OP-PILING-Tender-Document-Issued-17-April-2026-Rev-C.pdf','ME185_Piling_Tender_Rev_C.pdf');return false;" class="btn btn-download btn-sm">Download</a></div>
-        <div class="doc-tile"><div class="icon">&#128202;</div><div class="title">Pricing Schedule Rev 0</div><div class="meta">xlsx &mdash; priceable by contractor</div><a href="#" onclick="downloadFile('ME185/tender-piling/ME185-PIL-Pricing-Schedule-Rev0.xlsx','ME185_Piling_Pricing_Schedule.xlsx');return false;" class="btn btn-download btn-sm">Download</a></div>
-        <div class="doc-tile"><div class="icon">&#128209;</div><div class="title">Piling Specification</div><div class="meta">NJV 199 SPEC-04 Rev A</div><a href="#" onclick="downloadFile('ME185/tender-piling/NJV-199-SPEC-04-Rev-A-Piling-Specification.pdf','NJV_199_SPEC_04_Piling_Spec.pdf');return false;" class="btn btn-download btn-sm">Download</a></div>
-        <div class="doc-tile"><div class="icon">&#128209;</div><div class="title">Concrete Specification</div><div class="meta">NJV 199 SPEC-02 Rev A</div><a href="#" onclick="downloadFile('ME185/tender-piling/NJV-199-SPEC-02-Rev-A-Concrete-Specification.pdf','NJV_199_SPEC_02_Concrete_Spec.pdf');return false;" class="btn btn-download btn-sm">Download</a></div>
-        <div class="doc-tile"><div class="icon">&#128209;</div><div class="title">Steelwork Specification</div><div class="meta">NJV 199 SPEC-03 Rev A</div><a href="#" onclick="downloadFile('ME185/tender-piling/NJV-199-SPEC-03-Rev-A-Steelwork-Specification.pdf','NJV_199_SPEC_03_Steelwork_Spec.pdf');return false;" class="btn btn-download btn-sm">Download</a></div>
-        <div class="doc-tile"><div class="icon">&#128209;</div><div class="title">General Notes &amp; Spec</div><div class="meta">NJV 199 CIV_SPEC-01 Rev A</div><a href="#" onclick="downloadFile('ME185/tender-piling/NJV-199-CIV-SPEC-01-Rev-A-General-Notes-and-Specification.pdf','NJV_199_CIV_SPEC_01_General.pdf');return false;" class="btn btn-download btn-sm">Download</a></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Contractor Pricing Upload</h2><span class="badge b-indigo">For contractors</span></div>
-    <div class="card-b">
-      <p style="font-size:0.8rem;color:var(--text2);margin-bottom:12px">Tendering contractors can upload completed pricing schedules here. All uploads are logged and visible to Metric Edge.</p>
-      <div class="upload-zone" onclick="document.getElementById('pilingPriceInput').click()">
-        <div class="icon">&#8682;</div>
-        <div class="upload-title">Drop completed pricing schedule here or click to browse</div>
-        <div class="upload-sub">Accepted: .xlsx, .pdf (max 50MB)</div>
-        <input type="file" id="pilingPriceInput" style="display:none" accept=".xlsx,.pdf" onchange="handleQuoteUpload(this,'piling')">
-        <div class="upload-progress"><div class="upload-progress-bar"></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- TENDER: ALUMINIUM / PT / BULK EARTHWORKS (pending) -->
-<div class="panel" id="panel-tender-aluminium">
-  <div class="card">
-    <div class="card-h"><h2>Aluminium Windows &mdash; Tender Pack</h2><span class="badge b-grey">In preparation</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128736;</div><h3>Tender pack in preparation</h3><p>Aluminium windows tender documentation is currently being drafted. Expected issue: TBC. Pack will include JBCC PBA contract data, facade schedule, hardware spec and priceable schedule.</p></div></div>
-  </div>
-</div>
-
-<div class="panel" id="panel-tender-pt">
-  <div class="card">
-    <div class="card-h"><h2>Post-Tensioning &mdash; Tender Pack</h2><span class="badge b-grey">In preparation</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128736;</div><h3>Tender pack in preparation</h3><p>Post-tensioning tender documentation is currently being drafted. Area: 827m&#178; @ R700/m&#178; Stage 4 reference. Expected issue: TBC.</p></div></div>
-  </div>
-</div>
-
-<div class="panel" id="panel-tender-bulkearth">
-  <div class="card">
-    <div class="card-h"><h2>Bulk Earthworks &mdash; Tender Pack</h2><span class="badge b-grey">In preparation</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128736;</div><h3>Tender pack in preparation</h3><p>Bulk earthworks tender documentation is currently being drafted. Expected issue: TBC.</p></div></div>
-  </div>
-</div>
-
-<!-- DRAWINGS -->
-<div class="panel" id="panel-drawings">
-  <div class="card">
-    <div class="card-h"><h2>Pre-Tender Drawings</h2><span class="badge b-indigo">Architectural &amp; Civil</span></div>
-    <div class="card-b"><div class="empty-state"><div class="icon">&#128196;</div><h3>Drawing register &mdash; upload pending</h3><p>Pre-tender drawings (architectural, structural, civil) will populate here as uploaded to the portal. Source: <code>2026/Pre tender drawings/</code> and <code>2026/Tender drawings/</code>.</p></div></div>
-  </div>
-</div>
-
-<!-- FEASIBILITY REFERENCE -->
-<div class="panel" id="panel-feasibility">
-  <div class="mg" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-    <div class="m indigo"><div class="m-label">Total Project (ex VAT)</div><div class="m-value">R 88,719,634</div><div class="m-sub">All costs incl. land, finance, fees</div></div>
-    <div class="m gold"><div class="m-label">Builders &amp; Ext Works (ex Prelims)</div><div class="m-value">R 54,001,335</div><div class="m-sub">Hard cost base</div></div>
-    <div class="m cyan"><div class="m-label">Net After Sales Income</div><div class="m-value">R 64,023,634</div><div class="m-sub">Sales of R 24,696,000 deducted</div></div>
-    <div class="m green"><div class="m-label">Yield on Capital</div><div class="m-value" style="color:var(--green)">9.96%</div><div class="m-sub">Sell &amp; Let model (2F Block C sold)</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Feasibility &mdash; Option A rev1 (18 November 2025) &mdash; Full Line-by-Line</h2><span class="badge b-indigo">Authoritative reference</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th>Item</th><th class="r" style="width:120px">Rate / %</th><th class="r" style="width:180px">Amount (R)</th></tr></thead>
-        <tbody>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">1. BUILDERS &amp; EXTERNAL WORKS</strong></td></tr>
-          <tr><td>Building A</td><td class="r">&mdash;</td><td class="r">10,535,738</td></tr>
-          <tr><td>Building B</td><td class="r">&mdash;</td><td class="r">7,552,630</td></tr>
-          <tr><td>Building C</td><td class="r">&mdash;</td><td class="r">20,779,088</td></tr>
-          <tr><td>General Common Areas</td><td class="r">&mdash;</td><td class="r">3,415,287</td></tr>
-          <tr><td>External Works</td><td class="r">&mdash;</td><td class="r">11,718,592</td></tr>
-          <tr><td>Preliminaries</td><td class="r">10.0%</td><td class="r">5,400,134</td></tr>
-          <tr class="row-total"><td><strong>Sub-total 1</strong></td><td class="r"></td><td class="r">59,401,469</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">2. CONTINGENCY</strong></td></tr>
-          <tr><td>Contingency</td><td class="r">4.5%</td><td class="r">2,673,066</td></tr>
-          <tr class="row-total"><td><strong>Total ex VAT incl. Contingency</strong></td><td class="r"></td><td class="r">62,074,535</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">3. ESCALATION</strong> (5% p.a. &mdash; 0.5% per month)</td></tr>
-          <tr><td>Pre-contract escalation (base to 30 Jul 2025)</td><td class="r">&mdash;</td><td class="r">1,485,037</td></tr>
-          <tr><td>Contract escalation (construction starts 1 Feb 2026)</td><td class="r">&mdash;</td><td class="r">2,376,059</td></tr>
-          <tr class="row-total"><td><strong>Sub-total 2</strong></td><td class="r"></td><td class="r">65,935,631</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">4. OTHER COSTS</strong></td></tr>
-          <tr><td>Electrical contribution (mini sub)</td><td class="r">&mdash;</td><td class="r">1,000,000</td></tr>
-          <tr><td>Water / sewer / stormwater / electrical connection costs</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
-          <tr><td>Signage</td><td class="r">&mdash;</td><td class="r">300,000</td></tr>
-          <tr class="row-total"><td><strong>Sub-total &mdash; Other Costs</strong></td><td class="r"></td><td class="r">1,800,000</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">5. PROFESSIONAL FEES</strong></td></tr>
-          <tr><td>Professional fees (QS / arch / structural / services / fire / H&amp;S)</td><td class="r">10.0%</td><td class="r">6,593,563</td></tr>
-          <tr><td>Geotech</td><td class="r">&mdash;</td><td class="r">50,000</td></tr>
-          <tr><td>Development Management Fee</td><td class="r">1.0%</td><td class="r">659,356</td></tr>
-          <tr class="row-total"><td><strong>Sub-total &mdash; Professional Fees</strong></td><td class="r"></td><td class="r">7,302,919</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">6. PROPERTY COSTS</strong></td></tr>
-          <tr><td>Rates allowance</td><td class="r">&mdash;</td><td class="r">250,000</td></tr>
-          <tr><td>Sectional title &amp; body corporate fees</td><td class="r">&mdash;</td><td class="r">1,250,000</td></tr>
-          <tr><td>Legal fee allowance</td><td class="r">&mdash;</td><td class="r">200,000</td></tr>
-          <tr><td>Land surveyor costs</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
-          <tr><td>Local authority charges &mdash; plan scrutiny fees</td><td class="r">&mdash;</td><td class="r">110,000</td></tr>
-          <tr><td>Traffic impact assessment</td><td class="r">&mdash;</td><td class="r">40,000</td></tr>
-          <tr><td>Marketing budget</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
-          <tr><td>Procurement / letting commission</td><td class="r">&mdash;</td><td class="r">500,000</td></tr>
-          <tr class="row-total"><td><strong>Sub-total &mdash; Property Costs</strong></td><td class="r"></td><td class="r">3,350,000</td></tr>
-
-          <tr class="row-total"><td><strong>Sub-total 3</strong></td><td class="r"></td><td class="r">78,388,550</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">7. FINANCE COSTS</strong></td></tr>
-          <tr><td>Interest allowance (0.45 cashflow factor applied)</td><td class="r">10.5%</td><td class="r">4,938,479</td></tr>
-          <tr><td>Finance raising fee</td><td class="r">1.5%</td><td class="r">1,175,828</td></tr>
-          <tr class="row-total"><td><strong>Sub-total &mdash; Finance Costs</strong></td><td class="r"></td><td class="r">6,114,307</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">8. LAND COST</strong></td></tr>
-          <tr><td>Land cost allocation</td><td class="r">&mdash;</td><td class="r">4,216,777</td></tr>
-          <tr class="row-total"><td><strong>Sub-total &mdash; Land</strong></td><td class="r"></td><td class="r">4,216,777</td></tr>
-
-          <tr class="row-total" style="background:rgba(220,38,38,0.08);border-top:3px solid var(--red)"><td><strong>TOTAL EXCL. VAT</strong></td><td class="r"></td><td class="r" style="color:var(--red);font-size:1rem">88,719,634</td></tr>
-
-          <tr class="row-grey"><td colspan="3"><strong style="color:var(--indigo)">9. SALES &amp; NET</strong></td></tr>
-          <tr><td>Less: Sales income (refer Sales sheet)</td><td class="r">&mdash;</td><td class="r">(24,696,000)</td></tr>
-          <tr class="row-total" style="background:rgba(22,163,74,0.08);border-top:3px solid var(--green)"><td><strong>Total ex VAT &mdash; after deduction of sales</strong></td><td class="r"></td><td class="r" style="color:var(--green);font-size:1rem">64,023,634</td></tr>
-
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Rental &amp; Yield</h2><span class="badge b-green">Sell &amp; Let Model &mdash; 2F Block C sold</span></div>
-    <div class="card-b" style="padding:0;overflow-x:auto">
-      <table>
-        <thead><tr><th>Building / Income Source</th><th class="r">Lettable (m&#178;)</th><th class="r">Target R/m&#178;</th><th class="r">Gross Rent / annum</th><th class="r">Net Rent (after 10% opp cost)</th></tr></thead>
-        <tbody>
-          <tr class="row-grey"><td colspan="5"><strong style="color:var(--indigo)">BUILDING A</strong> (754m&#178; lettable)</td></tr>
-          <tr><td>A02 &mdash; Burger Bar</td><td class="r">121</td><td class="r">R 300</td><td class="r">R 435,600</td><td class="r">R 392,040</td></tr>
-          <tr><td>Exclusive use rental &mdash; external seating</td><td class="r">36</td><td class="r">R 150</td><td class="r">R 64,800</td><td class="r">R 58,320</td></tr>
-          <tr><td>A03 &mdash; Liquor</td><td class="r">60</td><td class="r">R 300</td><td class="r">R 216,000</td><td class="r">R 194,400</td></tr>
-          <tr><td>A04 &mdash; GF</td><td class="r">60</td><td class="r">R 300</td><td class="r">R 216,000</td><td class="r">R 194,400</td></tr>
-          <tr><td>A05 &mdash; GF</td><td class="r">59</td><td class="r">R 300</td><td class="r">R 212,400</td><td class="r">R 191,160</td></tr>
-          <tr><td>A06 &mdash; GF</td><td class="r">62</td><td class="r">R 300</td><td class="r">R 223,200</td><td class="r">R 200,880</td></tr>
-          <tr><td>A07 &mdash; FF</td><td class="r">60</td><td class="r">R 275</td><td class="r">R 198,000</td><td class="r">R 178,200</td></tr>
-          <tr><td>A08 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
-          <tr><td>A09 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
-          <tr><td>A10 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
-          <tr><td>A11 &mdash; FF</td><td class="r">59</td><td class="r">R 275</td><td class="r">R 194,700</td><td class="r">R 175,230</td></tr>
-          <tr><td>A12 &mdash; FF</td><td class="r">60</td><td class="r">R 275</td><td class="r">R 198,000</td><td class="r">R 178,200</td></tr>
-          <tr class="row-total"><td><strong>Building A sub-total</strong></td><td class="r">754</td><td class="r"></td><td class="r">R 2,542,800</td><td class="r">R 2,288,520</td></tr>
-
-          <tr class="row-grey"><td colspan="5"><strong style="color:var(--indigo)">BUILDING B</strong> (592m&#178; lettable)</td></tr>
-          <tr><td>Florist &mdash; B01</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
-          <tr><td>Barber &mdash; B02</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
-          <tr><td>Vacant &mdash; B03</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
-          <tr><td>Print shop &mdash; B04</td><td class="r">51</td><td class="r">R 300</td><td class="r">R 183,600</td><td class="r">R 165,240</td></tr>
-          <tr><td>Laundromat &mdash; B05</td><td class="r">88</td><td class="r">R 300</td><td class="r">R 316,800</td><td class="r">R 285,120</td></tr>
-          <tr><td>Gym</td><td class="r">300</td><td class="r">R 175</td><td class="r">R 630,000</td><td class="r">R 567,000</td></tr>
-          <tr class="row-total"><td><strong>Building B sub-total</strong></td><td class="r">592</td><td class="r"></td><td class="r">R 1,681,200</td><td class="r">R 1,513,080</td></tr>
-
-          <tr class="row-grey"><td colspan="5"><strong style="color:var(--indigo)">BUILDING C</strong> (1,606.2m&#178; &mdash; retail GF sold, FF let, SF sold)</td></tr>
-          <tr><td>Retail GF &mdash; sold @ R24,000/m&#178;</td><td class="r">363</td><td class="r">R 24,000</td><td class="r" colspan="2">Sales income R 8,712,000</td></tr>
-          <tr><td>Retail GF &mdash; sold @ R24,000/m&#178;</td><td class="r">19</td><td class="r">R 24,000</td><td class="r" colspan="2">Sales income R 456,000</td></tr>
-          <tr><td>Exclusive use rental &mdash; external seating</td><td class="r">70.2</td><td class="r">R 150</td><td class="r">R 126,360</td><td class="r">R 113,724</td></tr>
-          <tr><td>C01 &mdash; FF</td><td class="r">159</td><td class="r">R 275</td><td class="r">R 524,700</td><td class="r">R 472,230</td></tr>
-          <tr><td>C02 &mdash; FF</td><td class="r">124</td><td class="r">R 275</td><td class="r">R 409,200</td><td class="r">R 368,280</td></tr>
-          <tr><td>C03 &mdash; FF</td><td class="r">124</td><td class="r">R 275</td><td class="r">R 409,200</td><td class="r">R 368,280</td></tr>
-          <tr><td>C04 &mdash; FF</td><td class="r">155</td><td class="r">R 275</td><td class="r">R 511,500</td><td class="r">R 460,350</td></tr>
-          <tr><td>C05 &mdash; FF</td><td class="r">128</td><td class="r">R 275</td><td class="r">R 422,400</td><td class="r">R 380,160</td></tr>
-          <tr><td>C06 &mdash; SF &mdash; sold @ R27,000/m&#178;</td><td class="r">464</td><td class="r">R 27,000</td><td class="r" colspan="2">Sales income R 15,528,000</td></tr>
-          <tr class="row-total"><td><strong>Building C sub-total (rental only)</strong></td><td class="r">1,606.2</td><td class="r"></td><td class="r">R 2,403,360</td><td class="r">R 2,163,024</td></tr>
-
-          <tr class="row-total" style="background:rgba(200,168,78,0.15)"><td><strong>TOTAL RENTAL INCOME</strong></td><td class="r"><strong>2,952.2</strong></td><td class="r"></td><td class="r"><strong>R 6,627,360</strong></td><td class="r"><strong>R 5,964,624</strong></td></tr>
-          <tr><td>Parking income (49 bays @ R700/mo)</td><td class="r">&mdash;</td><td class="r">&mdash;</td><td class="r" colspan="2">R 411,600</td></tr>
-          <tr class="row-total" style="background:rgba(22,163,74,0.08)"><td><strong>TOTAL INCOME (Rental + Parking)</strong></td><td class="r"></td><td class="r"></td><td class="r" colspan="2" style="color:var(--green)"><strong>R 6,376,224 / annum</strong></td></tr>
-          <tr class="row-total" style="background:rgba(200,168,78,0.15)"><td><strong>TOTAL SALES INCOME</strong></td><td class="r"></td><td class="r"></td><td class="r" colspan="2"><strong>R 24,696,000 (once-off)</strong></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="info-box">
-    <strong>Triple-net lease assumption:</strong> All rentals modelled as triple-net &mdash; tenants recover all opex via levies. 10% opp cost allowance = developer/landlord contingency. All prices exclude VAT. No commission modelled on sales.
-  </div>
-
-  <div class="card">
-    <div class="card-h"><h2>Feasibility Document</h2></div>
-    <div class="card-b">
-      <div class="doc-grid">
-        <div class="doc-tile"><div class="icon">&#128196;</div><div class="title">Feasibility Option A rev1</div><div class="meta">PDF &mdash; 18 November 2025</div><a href="#" onclick="downloadFile('ME185/feasibility/Erf-514-Revised-final-feasibility-Option-A-rev1-18-Nov-2025.pdf','Erf_514_Feasibility_Option_A_rev1_18_Nov_2025.pdf');return false;" class="btn btn-download btn-sm">Download</a></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-</div><!-- end content -->
-
-<footer>The Co-Op Zululami &#8226; Consultant Budget Dashboard &#8226; Powered by Metric Edge &#8226; 2026 &#8226; <em>Soli Deo Gloria</em></footer>
-
-</div><!-- end #appPage -->
-
-<div class="toast" id="toast"></div>
-
+</main>
+<footer id="ft"></footer>
 <script>
-// SUPABASE
-const SUPABASE_URL = 'https://cnygijmypuaeguxrwwjc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNueWdpam15cHVhZWd1eHJ3d2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQzODQ4MDAsImV4cCI6MjA4OTk2MDgwMH0.q_Z8WoT9wzDzkdMHUQwA0DBL0HI5VuvWvt11hM4SqeY';
-const STORAGE_BUCKET = 'project-files';
-const PROJECT_PREFIX = 'ME185';
-const PROJECT_ID = '1b1553cf-b327-491d-ad85-1ab5868fb3de';
+const D = window.ME185_DATA;
+const R = v => 'R ' + (v<0?'-':'') + Math.abs(v).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});
+const cls = v => v>0.005?'pos':(v<-0.005?'neg':'');
 
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+document.getElementById('hd-sub').textContent =
+  `${D.meta.client} · Prepared by ${D.meta.prepared_by} · Data published ${D.meta.generated}`;
+document.getElementById('ft').textContent =
+  `${D.meta.project} — generated ${D.meta.generated} from Excel masters. Soli Deo Gloria — Metric Edge.`;
 
-// TOAST
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast ' + type + ' show';
-  setTimeout(() => t.classList.remove('show'), 3500);
-}
-
-// AUTH (disabled by default - loginPage hidden; appPage shown)
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pw = document.getElementById('loginPassword').value;
-  const errEl = document.getElementById('loginError');
-  errEl.style.display = 'none';
-  if (!email || !pw) { errEl.textContent = 'Enter email and password.'; errEl.style.display = 'block'; return; }
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-  if (error) { errEl.textContent = error.message; errEl.style.display = 'block'; return; }
-  document.getElementById('loginPage').style.display = 'none';
-  document.getElementById('appPage').style.display = 'block';
-}
-
-// NAV
-function navTo(id, el) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  const panel = document.getElementById('panel-' + id);
-  if (panel) panel.classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.nav-drop-item').forEach(d => d.classList.remove('active'));
-  if (el) {
-    el.classList.add('active');
-    const parent = el.closest('.nav-item');
-    if (parent) { const pb = parent.querySelector('.nav-btn'); if (pb) pb.classList.add('active'); }
+// tabs
+document.getElementById('nav').addEventListener('click', e=>{
+  if(e.target.dataset.tab){
+    document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b===e.target));
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.id==='tab-'+e.target.dataset.tab));
   }
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
-  window.scrollTo(0, 0);
-  if (id === 'overview' || id === 'building-a') setTimeout(renderCharts, 50);
-}
-
-function toggleDrop(btn) {
-  const item = btn.closest('.nav-item');
-  const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
-  if (!wasOpen) item.classList.add('open');
-}
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-item')) document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
 });
 
-// FILE DOWNLOAD (signed URL via Supabase Storage)
-async function downloadFile(filePath, displayName) {
-  try {
-    const { data, error } = await sb.storage.from(STORAGE_BUCKET).createSignedUrl(filePath, 300);
-    if (error) { showToast('File not yet uploaded: ' + displayName, 'error'); return; }
-    const a = document.createElement('a');
-    a.href = data.signedUrl;
-    a.download = displayName || filePath.split('/').pop();
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  } catch (e) {
-    showToast('Download failed: ' + e.message, 'error');
-  }
-}
+// core numbers
+const ct = D.contract.total;
+const ps = D.psTracker.total;
+const psAdj = ps.variance;                    // AFC - Budget across PS packages
+const contractAFC = ct + psAdj;               // current contract AFC
+const feasJun = D.feasibility.lines.find(l=>l.item==='Builders & External Works');
+const contJun = D.feasibility.lines.find(l=>l.item==='Contingency');
+const feasAllow = (feasJun?feasJun.jun2026:0) + (contJun?contJun.jun2026:0);
+const afcIncCont = contractAFC + (contJun?contJun.jun2026:0);
+const headroom = feasAllow - afcIncCont;
+const committed = ps.actual;
 
-// CONTRACTOR QUOTE UPLOAD (tender pricing)
-async function handleQuoteUpload(input, pkgId) {
-  if (!input.files || !input.files.length) return;
-  const file = input.files[0];
-  const zone = input.closest('.upload-zone');
-  const progressWrap = zone.querySelector('.upload-progress');
-  const progressBar = zone.querySelector('.upload-progress-bar');
-  const filePath = PROJECT_PREFIX + '/quotes/' + pkgId + '_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-  if (progressWrap) { progressWrap.style.display = 'block'; progressBar.style.width = '30%'; }
-  const { error } = await sb.storage.from(STORAGE_BUCKET).upload(filePath, file, { upsert: true });
-  if (progressWrap) progressBar.style.width = '70%';
-  if (error) {
-    showToast('Upload failed: ' + error.message, 'error');
-    if (progressWrap) { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; }
-    return;
-  }
-  if (PROJECT_ID !== 'PROJECT_ID_PLACEHOLDER') {
-    await sb.from('documents').insert({
-      project_id: PROJECT_ID,
-      category: 'quotes',
-      subcategory: pkgId,
-      file_name: file.name,
-      file_path: filePath,
-      file_size: file.size,
-      file_type: file.name.split('.').pop().toLowerCase(),
-      description: pkgId + ' pricing upload',
-      status: 'active'
-    });
-  }
-  if (progressWrap) progressBar.style.width = '100%';
-  setTimeout(() => { if (progressWrap) { progressWrap.style.display = 'none'; progressBar.style.width = '0%'; } }, 1000);
-  showToast(file.name + ' uploaded');
-}
+// KPIs
+const kpis = [
+  ['Main Contract (Slingshot)', R(ct), 'Final BOQ · JBCC PBA signed 12 Jun 2026'],
+  ['PS movement to date', R(psAdj), (psAdj<0?'Saving':'Overrun')+' across '+D.psTracker.rows.length+' PS packages'],
+  ['Current Contract AFC', R(contractAFC), 'Contract + PS adjustments'],
+  ['Feasibility headroom', R(headroom), 'vs June 2026 builders + contingency allowance'],
+];
+document.getElementById('kpis').innerHTML = kpis.map(k=>
+  `<div class="kpi"><div class="lbl">${k[0]}</div><div class="val ${k[0].includes('headroom')?cls(-headroom):''}">${k[1]}</div><div class="note">${k[2]}</div></div>`).join('');
 
-// CHARTS
-let chartFeas, chartBA;
-function renderCharts() {
-  const feasEl = document.getElementById('chartFeas');
-  if (feasEl && !chartFeas) {
-    chartFeas = new Chart(feasEl, {
-      type: 'bar',
-      data: {
-        labels: ['Building A', 'Building B', 'Building C', 'Common Areas', 'External Works'],
-        datasets: [{
-          label: 'Feasibility Allowance (R)',
-          data: [10535738, 7552630, 20779088, 3415287, 11718592],
-          backgroundColor: ['#c8a84e', '#4a5568', '#7c3aed', '#0891b2', '#16a34a'],
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { y: { ticks: { callback: v => 'R ' + (v/1e6).toFixed(1) + 'M' } } }
-      }
-    });
-  }
-  const baEl = document.getElementById('chartBuildingA');
-  if (baEl && !chartBA) {
-    chartBA = new Chart(baEl, {
-      type: 'bar',
-      data: {
-        labels: ['Feasibility', 'Stage 2', 'Stage 4'],
-        datasets: [{
-          label: 'Building A (R)',
-          data: [10535738, 10467372, 12028724],
-          backgroundColor: ['#4a5568', '#c8a84e', '#dc2626'],
-          borderRadius: 4
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { y: { ticks: { callback: v => 'R ' + (v/1e6).toFixed(1) + 'M' } } }
-      }
-    });
-  }
-}
+// AFC flow
+document.getElementById('afc-src').textContent = 'Sources: '+D.contract.source+' · '+D.psTracker.source+' (as updated) · feasibility June 2026';
+const flow = [
+  ['Main Contract — Slingshot Final BOQ (ex VAT)', ct, ''],
+  ['Provisional sum adjustments (AFC vs budget within BOQ)', psAdj, 'v'],
+  ['Current Contract AFC', contractAFC, 'em'],
+  ['Contingency allowance (June 2026 feasibility, unspent)', contJun?contJun.jun2026:0, ''],
+  ['Construction AFC incl. contingency', afcIncCont, 'em'],
+  ['Feasibility allowance — builders + contingency (June 2026)', feasAllow, ''],
+  ['Headroom vs issued feasibility', headroom, 'em v'],
+];
+document.getElementById('afc-flow').innerHTML = flow.map(f=>
+  `<div class="flowrow ${f[2].includes('em')?'em':''}"><span class="n">${f[0]}</span><span class="v ${f[2].includes('v')?cls(f[0].includes('Headroom')?-f[1]:f[1]):''}">${R(f[1])}</span></div>`).join('');
 
-// Initial render
-window.addEventListener('DOMContentLoaded', () => setTimeout(renderCharts, 100));
+// PS flow
+const awarded = D.psTracker.rows.filter(r=>/award/i.test(r.tender_status));
+const awardedAFC = awarded.reduce((s,r)=>s+r.afc,0);
+document.getElementById('ps-flow').innerHTML = [
+  ['PS budget within Main Contract BOQ ('+D.psTracker.rows.length+' packages)', ps.budget,''],
+  ['Current AFC across all PS packages', ps.afc,''],
+  ['Movement (saving)', ps.variance,'v'],
+  ['Awarded to date — '+awarded.length+' packages (AFC)', awardedAFC,''],
+  ['Committed / actual to date', committed,''],
+  ['Still to procure (AFC balance)', ps.afc-awardedAFC,'em'],
+].map(f=>`<div class="flowrow ${f[2].includes('em')?'em':''}"><span class="n">${f[0]}</span><span class="v ${f[2].includes('v')?cls(f[1]):''}">${R(f[1])}</span></div>`).join('');
+
+// PS table
+document.getElementById('ps-src').textContent = 'Source: '+D.psTracker.source+' — sheet "PS Tracker"';
+const pill = s => {
+  const t=s.toLowerCase();
+  if(t.includes('award'))return '<span class="pill awarded">Awarded</span>';
+  if(t.includes('adjud')||t.includes('pending'))return '<span class="pill pending">'+s+'</span>';
+  if(t.includes('out to tender'))return '<span class="pill tender">Out to tender</span>';
+  return '<span class="pill notout">'+ (s||'—') +'</span>';
+};
+document.getElementById('ps-table').innerHTML =
+  '<tr><th>No</th><th>Package</th><th class="r">Budget (PS)</th><th class="r">AFC</th><th class="r">Actual</th><th class="r">Variance</th><th>Status</th><th>Subcontractor</th><th>Notes</th></tr>'
+  + D.psTracker.rows.map(r=>
+    `<tr><td>${r.no}</td><td>${r.package}</td><td class="r">${R(r.budget)}</td><td class="r">${R(r.afc)}</td>
+     <td class="r">${r.actual?R(r.actual):'—'}</td><td class="r ${cls(r.variance)}">${r.variance?R(r.variance):'—'}</td>
+     <td>${pill(r.tender_status)}</td><td>${r.subcontractor&&!/not out|pending/i.test(r.subcontractor)?r.subcontractor:'—'}</td>
+     <td class="notes">${r.notes||''}</td></tr>`).join('')
+  + `<tr class="total"><td></td><td>TOTAL PROVISIONAL SUMS</td><td class="r">${R(ps.budget)}</td><td class="r">${R(ps.afc)}</td><td class="r">${R(ps.actual)}</td><td class="r ${cls(ps.variance)}">${R(ps.variance)}</td><td colspan="3"></td></tr>`;
+
+// appointments
+document.getElementById('appt-table').innerHTML =
+  '<tr><th>Role</th><th>Firm</th><th>Package</th><th class="r">Amount (ex VAT)</th><th>Instruction</th><th>Status</th></tr>'
+  + D.appointments.map(a=>
+    `<tr><td>${a.role}</td><td><strong>${a.firm}</strong></td><td>${a.package}</td><td class="r">${R(a.amount)}</td>
+     <td style="font-family:'JetBrains Mono',monospace;font-size:11px">${a.instruction}</td>
+     <td><span class="pill awarded">${a.status}</span></td></tr>`).join('');
+
+// contract
+document.getElementById('ct-src').textContent = 'Source: '+D.contract.source+' — sheet "Summary"';
+document.getElementById('ct-table').innerHTML =
+  '<tr><th>Section</th><th class="r">Amount (ex VAT)</th></tr>'
+  + D.contract.sections.map(s=>`<tr><td>${s.section}</td><td class="r">${R(s.amount)}</td></tr>`).join('')
+  + `<tr class="total"><td>Total ex VAT — Slingshot Contract Works</td><td class="r">${R(ct)}</td></tr>`;
+
+// feasibility
+document.getElementById('fs-src').textContent = 'Source: '+D.feasibility.source+' — sheet "final summary" · issued '+D.feasibility.issued+' · reference only, frozen';
+document.getElementById('fs-table').innerHTML =
+  '<tr><th>Item</th><th class="r">Nov 2025</th><th class="r">June 2026 (issued)</th><th class="r">Movement</th></tr>'
+  + D.feasibility.lines.map(l=>{
+    const mv=l.jun2026-l.nov2025;
+    const tot=l.item==='TOTAL EXCL. VAT';
+    return `<tr class="${tot?'total':''}"><td>${l.item}</td><td class="r">${R(l.nov2025)}</td><td class="r">${R(l.jun2026)}</td><td class="r ${cls(mv)}">${R(mv)}</td></tr>`;
+  }).join('');
 </script>
 </body>
 </html>
